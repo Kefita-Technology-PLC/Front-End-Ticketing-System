@@ -10,11 +10,15 @@ import { Employee } from "./Components/Employee";
 import { TotalReport } from "./Components/TotalReport";
 import { TicketReport } from "./Components/TicketReport";
 import { useState } from "react";
+import PrivateRoute from "./auth/PrivateRoute";
+import Login from "./auth/Login";
+import RegisterForm from "./auth/Register";
 function App() {
   const [stations, setStations] = useState([]);
   const [selectedStation, setSelectedStation] = useState("asela");
+
   return (
-    <div>
+    <div className=" font-roboto">
       <Router>
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -22,14 +26,17 @@ function App() {
             <Route
               path="Vehicle"
               element={
-                <Vehicle
-                  station={stations}
-                  setStations={setStations}
-                  selectedStation={selectedStation}
-                  setSelectedStation={setSelectedStation}
-                />
+                <PrivateRoute>
+                  <Vehicle
+                    station={stations}
+                    setStations={setStations}
+                    selectedStation={selectedStation}
+                    setSelectedStation={setSelectedStation}
+                  />
+                </PrivateRoute>
               }
             />
+
             <Route
               path="Association"
               element={
@@ -68,7 +75,8 @@ function App() {
             <Route path="TicketReport" element={<TicketReport />} />
             <Route path="TotalReport" element={<TotalReport />} />
           </Route>
-          <Route path="login" element={<div>this is login page</div>} />
+          <Route path="login" element={<Login />} />
+          <Route path="Register" element={<RegisterForm />} />
         </Routes>
       </Router>
     </div>
