@@ -13,6 +13,7 @@ import { useState } from "react";
 import PrivateRoute from "./auth/PrivateRoute";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/Register";
+import ForgotPassword from "./auth/components/ForgetPassword";
 function App() {
   const [stations, setStations] = useState([]);
   const [selectedStation, setSelectedStation] = useState("asela");
@@ -76,7 +77,8 @@ function App() {
             <Route path="TotalReport" element={<TotalReport />} />
           </Route>
           <Route path="login" element={<Login />} />
-          <Route path="Register" element={<RegisterForm />} />
+          <Route path="register" element={<RegisterForm />} />
+          <Route path="forget-password" element={<ForgotPassword />} />
         </Routes>
       </Router>
     </div>
