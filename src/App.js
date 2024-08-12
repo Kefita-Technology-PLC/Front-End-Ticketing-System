@@ -14,6 +14,7 @@ import PrivateRoute from "./auth/PrivateRoute";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/Register";
 import ForgotPassword from "./auth/components/ForgetPassword";
+import ResetPassword from "./auth/ResetPassword";
 function App() {
   const [stations, setStations] = useState([]);
   const [selectedStation, setSelectedStation] = useState("asela");
@@ -22,19 +23,22 @@ function App() {
     <div className=" font-roboto">
       <Router>
         <Routes>
-          <Route path="/" element={<Layout />}>
+          <Route path="/" element={
+            <PrivateRoute>
+               <Layout />
+            </PrivateRoute>
+          }>
             <Route index element={<Dashboard />} />
             <Route
               path="Vehicle"
               element={
-                <PrivateRoute>
                   <Vehicle
                     station={stations}
                     setStations={setStations}
                     selectedStation={selectedStation}
                     setSelectedStation={setSelectedStation}
                   />
-                </PrivateRoute>
+              
               }
             />
 
@@ -76,9 +80,11 @@ function App() {
             <Route path="TicketReport" element={<TicketReport />} />
             <Route path="TotalReport" element={<TotalReport />} />
           </Route>
+
           <Route path="login" element={<Login />} />
           <Route path="register" element={<RegisterForm />} />
           <Route path="forget-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
         </Routes>
       </Router>
     </div>

@@ -1,3 +1,5 @@
+import usePasswordToggle from "../../custom-hooks/usePasswordToggle";
+
 export default function InputFeild({
   handleChange, 
   value, 
@@ -5,10 +7,12 @@ export default function InputFeild({
   name, 
   type, 
   title, 
-  error
+  error,
+  eye,
+  iconEye,
 }) {
   return (
-    <div>
+    <div className="relative">
 
       <label for={name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{title}</label>
 
@@ -22,7 +26,14 @@ export default function InputFeild({
         value={value} 
         onChange={handleChange} 
       />
+
+      {
+        eye && (
+          <span className=" absolute top-[37px] right-[10px] z-[100] w-[30px] h-[30px] cursor-pointer">{iconEye}</span>
+        )
+      }
       
+
       {error && (
         <p className="mt-1 text-sm text-red-500 dark:text-red-400">{error}</p>
       )}

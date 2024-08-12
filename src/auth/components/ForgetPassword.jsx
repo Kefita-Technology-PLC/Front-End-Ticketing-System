@@ -29,7 +29,8 @@ const ForgotPassword = () => {
     } catch (error) {
       // Handle error if any
       if (error.response && error.response.data.errors) {
-        setError(error.response.data.errors.email[0]);
+        setError(error.response.data.errors.email);
+       
       } else {
         setError('An error occurred. Please try again.');
       }
