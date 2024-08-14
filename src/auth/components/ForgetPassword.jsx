@@ -9,6 +9,7 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false); // State to manage page transition
+  const [loading, setLoading] = useState(false); // State to manage loading
 
   const handleChange = (e) => {
     setEmail(e.target.value);
@@ -18,6 +19,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     setMessage('');
     setError('');
+    setLoading(true); // Set loading to true when starting to submit
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/forgot-password`, {
@@ -27,17 +29,16 @@ const ForgotPassword = () => {
       setMessage(response.data.status);
       setIsEmailSent(true);
     } catch (error) {
-      // Handle error if any
       if (error.response && error.response.data.errors) {
         setError(error.response.data.errors.email);
-       
       } else {
         setError('An error occurred. Please try again.');
       }
+    } finally {
+      setLoading(false); // Set loading to false when done
     }
   };
 
-  // Function to handle "Re-send Email" action
   const handleResendEmail = () => {
     setIsEmailSent(false);
     setError('');
@@ -50,7 +51,6 @@ const ForgotPassword = () => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             {isEmailSent ? (
-              // Success Message Page
               <div className="text-center">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   {message}
@@ -66,7 +66,6 @@ const ForgotPassword = () => {
                 </button>
               </div>
             ) : (
-              // Forgot Password Form
               <>
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Forget Password
@@ -81,7 +80,7 @@ const ForgotPassword = () => {
                     handleChange={handleChange}
                     error={error}
                   />
-                  <FormButton text={'Send Email Link'}/>
+                  <FormButton text={'Send Email Link'} loading={loading}/>
                 </form>
               </>
             )}

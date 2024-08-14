@@ -18,6 +18,8 @@ const RegisterForm = () => {
     password_confirmation: '',
   });
   const [errors, setErrors] = useState({});
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -123,7 +125,8 @@ const RegisterForm = () => {
                       aria-describedby="terms"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required=""
+                      onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                      required
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -141,7 +144,7 @@ const RegisterForm = () => {
                     </label>
                   </div>
                 </div>
-                <FormButton />
+                <FormButton isDisabled={!isTermsAccepted} />
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{' '}
                   <Link
@@ -170,11 +173,14 @@ function FormHeading() {
   );
 }
 
-function FormButton() {
+function FormButton({isDisabled}) {
   return (
     <button
       type="submit"
-      className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+      className={`w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ${
+        isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
+      disabled={isDisabled}
     >
       Create an account
     </button>
