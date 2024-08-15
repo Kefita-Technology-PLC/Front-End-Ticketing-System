@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout } from "./Components/shared/Layout";
 import Dashboard from "./Components/Dashboard";
@@ -9,10 +9,27 @@ import { Tariff } from "./Components/Tarif";
 import { Employee } from "./Components/Employee";
 import { TotalReport } from "./Components/TotalReport";
 import { TicketReport } from "./Components/TicketReport";
+
 import { useState } from "react";
 function App() {
   const [stations, setStations] = useState([]);
-  const [selectedStation, setSelectedStation] = useState("asela");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/stations");
+        const data = await response.json();
+        console.log("Fetched data:", data);
+        setStations(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setStations([]);
+      }
+    };
+
+    fetchData();
+  }, [setStations]);
+
   return (
     <div>
       <Router>
@@ -21,47 +38,23 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route
               path="Vehicle"
-              element={
-                <Vehicle
-                  station={stations}
-                  setStations={setStations}
-                  selectedStation={selectedStation}
-                  setSelectedStation={setSelectedStation}
-                />
-              }
+              element={<Vehicle station={stations} setStations={setStations} />}
             />
             <Route
               path="Association"
               element={
-                <Association
-                  stations={stations}
-                  setStations={setStations}
-                  selectedStation={selectedStation}
-                  setSelectedStation={setSelectedStation}
-                />
+                <Association stations={stations} setStations={setStations} />
               }
             />
             <Route path="Destination" element={<Destination />} />
             <Route
               path="Tarif"
-              element={
-                <Tariff
-                  stations={stations}
-                  setStations={setStations}
-                  selectedStation={selectedStation}
-                  setSelectedStation={setSelectedStation}
-                />
-              }
+              element={<Tariff stations={stations} setStations={setStations} />}
             />
             <Route
               path="Employee"
               element={
-                <Employee
-                  stations={stations}
-                  setStations={setStations}
-                  selectedStation={selectedStation}
-                  setSelectedStation={setSelectedStation}
-                />
+                <Employee stations={stations} setStations={setStations} />
               }
             />
 

@@ -14,7 +14,7 @@ const linkClass =
 
 export default function Sidebar() {
   return (
-    <div className="bg-neutral-900 w-60 p-3 flex flex-col">
+    <div className="bg-neutral-900  p-3 flex flex-col w-64 h-screen fixed top-0 left-0">
       <div className="flex items-center gap-2 px-1 py-3">
         <IoMdBus fontSize={24} className="bg-white " />
         <span className="text-neutral-200 text-lg">Transport App</span>

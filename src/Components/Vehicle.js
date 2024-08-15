@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-
-const Vehicle = ({
-  stations = [],
-  setStations,
-  selectedStation,
-  setSelectedStation,
-}) => {
+import { Select } from "./ui/select";
+import { Form, FormItem } from "./ui/Form";
+import { Button } from "./ui/Button";
+const Vehicle = ({ station, setStations }) => {
   const [vehicles, setVehicles] = useState([]);
+  const [selectedStation, setSelectedStation] = useState("");
   const [associations, setAssociations] = useState([]);
-  const [carTypes, setCarTypes] = useState([]);
-  const [levels, setLevels] = useState([]);
   const [plate, setPlate] = useState("");
   const [registration, setRegistration] = useState("");
   const [selectedAssociation, setSelectedAssociation] = useState("");
@@ -24,261 +20,248 @@ const Vehicle = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.example.com/data");
-        const data = await response.json();
+        const associationResponse = await fetch(
+          "http://localhost:3000/associations"
+        );
+        if (!associationResponse.ok)
+          throw new Error(`HTTP error! status: ${associationResponse.status}`);
+        const associationData = await associationResponse.json();
+        setAssociations(associationData);
 
-        setStations(data.stations || []);
-        setAssociations(data.associations || []);
-        setCarTypes(data.carTypes || []);
-        setLevels(data.levels || []);
-        setVehicles(data.vehicles || []);
+        const vehiclesResponse = await fetch("http://localhost:3000/vehicles");
+        if (!vehiclesResponse.ok)
+          throw new Error(`HTTP error! status: ${vehiclesResponse.status}`);
+        const vehiclesData = await vehiclesResponse.json();
+        setVehicles(vehiclesData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.message);
         setStations([]);
-        setAssociations([]);
-        setCarTypes([]);
-        setLevels([]);
-        setVehicles([]);
       }
     };
 
     fetchData();
-  }, [setStations, setAssociations, setCarTypes, setLevels]);
+  }, [setStations]);
 
   const handleSelectChange = (event) => {
     setSelectedNumber(event.target.value);
   };
 
-  const handleAddOrUpdateVehicle = () => {
-    const newVehicle = {
-      id: isEditing ? editVehicleId : Date.now(),
+  const handleAddOrUpdateVehicle = async (event) => {
+    event.preventDefault();
+
+    const vehicleData = {
       station_id: selectedStation,
       association_id: selectedAssociation,
       plate_number: plate,
       level: selectedLevel,
       registration_date: registration,
-      number_of_passengers: selectedNumber,
+      number_of_passengers: parseInt(selectedNumber, 10),
       car_type: selectedCarType,
     };
 
-    if (isEditing) {
-      setVehicles((prevVehicles) =>
-        prevVehicles.map((vehicle) =>
-          vehicle.id === editVehicleId ? newVehicle : vehicle
-        )
-      );
+    const url = isEditing
+      ? `http://localhost:3000/vehicles/${editVehicleId}`
+      : `http://localhost:3000/vehicles`;
+    const method = isEditing ? "PUT" : "POST";
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vehicleData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const updatedOrNewVehicle = await response.json();
+
+      if (isEditing) {
+        setVehicles((vehicles) =>
+          vehicles.map((v) =>
+            v.id === editVehicleId ? updatedOrNewVehicle : v
+          )
+        );
+      } else {
+        setVehicles((vehicles) => [...vehicles, updatedOrNewVehicle]);
+      }
+
+      // Reset form
+      setSelectedStation("");
+      setSelectedAssociation("");
+      setPlate("");
+      setSelectedLevel("");
+      setRegistration("");
+      setSelectedNumber("");
+      setSelectedCarType("");
       setIsEditing(false);
       setEditVehicleId(null);
-    } else {
-      setVehicles([...vehicles, newVehicle]);
+    } catch (error) {
+      console.error("Error adding/updating vehicle:", error.message);
     }
-
-    // Reset the form fields
-    setSelectedStation("");
-    setSelectedAssociation("");
-    setPlate("");
-    setSelectedLevel("");
-    setRegistration("");
-    setSelectedNumber("");
-    setSelectedCarType("");
   };
 
   const handleEditVehicle = (vehicle) => {
-    setSelectedStation(vehicle.station_id);
-    setSelectedAssociation(vehicle.association_id);
-    setPlate(vehicle.plate_number);
-    setSelectedLevel(vehicle.level);
-    setRegistration(vehicle.registration_date);
-    setSelectedNumber(vehicle.number_of_passengers);
-    setSelectedCarType(vehicle.car_type);
+    if (!vehicle || !vehicle.id) {
+      console.error("Invalid vehicle data provided for editing.");
+      return;
+    }
+
+    setSelectedStation(vehicle.station_id || "");
+    setSelectedAssociation(vehicle.association_id || "");
+    setPlate(vehicle.plate_number || "");
+    setSelectedLevel(vehicle.level || "Level 1");
+    setRegistration(vehicle.registration_date || "");
+    setSelectedNumber(vehicle.number_of_passengers || 1);
+    setSelectedCarType(vehicle.car_type || "");
+
     setIsEditing(true);
     setEditVehicleId(vehicle.id);
   };
 
-  const handleDeleteVehicle = (vehicleId) => {
-    setVehicles((prevVehicles) =>
-      prevVehicles.filter((vehicle) => vehicle.id !== vehicleId)
-    );
+  const handleDeleteVehicle = async (vehicleId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/vehicles/${vehicleId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      setVehicles((vehicles) => vehicles.filter((v) => v.id !== vehicleId));
+    } catch (error) {
+      console.error("Error deleting vehicle:", error.message);
+    }
   };
 
   return (
-    <div>
-      <div className="flex m-7 justify-around gap-7">
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="station-select">Choose a station:</label>
-          <select
-            id="station-select"
-            value={selectedStation}
-            onChange={(e) => setSelectedStation(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select a station</option>
-            {stations.map((station) => (
-              <option key={station.id} value={station.id}>
-                {station.name}
-              </option>
-            ))}
-          </select>
+    <div className="mx-8 my">
+      <Form onSubmit={handleAddOrUpdateVehicle} className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FormItem label="Select a Station" htmlFor="station-select">
+            <Select
+              id="station-select"
+              value={selectedStation}
+              onChange={(e) => setSelectedStation(e.target.value)}
+              options={station.map((s) => ({
+                value: s.id,
+                label: s.name,
+              }))}
+              required
+            />
+          </FormItem>
 
-          <label htmlFor="association-select">Association name:</label>
-          <select
-            id="association-select"
-            value={selectedAssociation}
-            onChange={(e) => setSelectedAssociation(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select an association</option>
-            {associations.map((association) => (
-              <option key={association.id} value={association.id}>
-                {association.name}
-              </option>
-            ))}
-          </select>
+          <FormItem label="Association Name" htmlFor="association-select">
+            <Select
+              id="association-select"
+              value={selectedAssociation}
+              onChange={(e) => setSelectedAssociation(e.target.value)}
+              options={associations.map((assoc) => ({
+                value: assoc.id,
+                label: assoc.name,
+              }))}
+              required
+            />
+          </FormItem>
 
-          <label>Plate number:</label>
-          <input
-            type="text"
-            value={plate}
-            onChange={(e) => setPlate(e.target.value)}
-            className="form-input mt-1 block w-full"
-          />
+          <FormItem label="Plate Number" htmlFor="plate">
+            <input
+              id="plate"
+              type="text"
+              value={plate}
+              onChange={(e) => setPlate(e.target.value)}
+              // className="mt-1 block w-full px-3 py-2 border border-neutral-500 bg-neutral-700 text-white rounded-md shadow-sm focus:outline-none focus:ring-neutral-400 focus:border-neutral-400 sm:text-sm"
+              className="px-4 py-4  rounded-md shadow-sm border-2  border-gray-700 text-gray-500 "
+              placeholder="Enter plate number"
+              required
+            />
+          </FormItem>
 
-          <label htmlFor="level-select">Choose a level:</label>
-          <select
-            id="level-select"
-            value={selectedLevel}
-            onChange={(e) => setSelectedLevel(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select a level</option>
-            {levels.map((level) => (
-              <option key={level.id} value={level.id}>
-                {level.name}
-              </option>
-            ))}
-          </select>
+          <FormItem label="Choose a Level" htmlFor="level-select">
+            <Select
+              id="level-select"
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+              options={[
+                { value: "Level 1", label: "Level 1" },
+                { value: "Level 2", label: "Level 2" },
+                { value: "Level 3", label: "Level 3" },
+              ]}
+              required
+            />
+          </FormItem>
+
+          <FormItem label="Passenger Number" htmlFor="number-select">
+            <Select
+              id="number-select"
+              value={selectedNumber}
+              onChange={handleSelectChange}
+              options={numbers.map((number) => ({
+                value: number,
+                label: number,
+              }))}
+              required
+            />
+          </FormItem>
+
+          <FormItem label="Choose a Car Type" htmlFor="car-type-select">
+            <Select
+              id="car-type-select"
+              value={selectedCarType}
+              onChange={(e) => setSelectedCarType(e.target.value)}
+              options={[
+                { value: "minibus", label: "Minibus" },
+                { value: "Bus", label: "Bus" },
+                { value: "kitkit", label: "Kitkit" },
+              ]}
+              required
+            />
+          </FormItem>
+
+          <FormItem label="Registration Date" htmlFor="registration">
+            <input
+              id="registration"
+              type="date"
+              value={registration}
+              onChange={(e) => setRegistration(e.target.value)}
+              className="px-4 py-4  rounded-md shadow-sm border-2  border-gray-700 text-neutral-500 "
+              required
+            />
+          </FormItem>
         </div>
 
-        <div className="flex flex-col gap-2 w-full">
-          <label>Passenger number:</label>
-          <select
-            id="number-select"
-            value={selectedNumber}
-            onChange={handleSelectChange}
-            className="form-select mt-1 block w-full"
+        <div className="flex items-center space-x-4">
+          <Button
+            type="submit"
+            className="bg-neutral-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-neutral-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400"
           >
-            <option value="">Select a number</option>
-            {numbers.map((number) => (
-              <option key={number} value={number}>
-                {number}
-              </option>
-            ))}
-          </select>
-
-          <label htmlFor="car-type-select">Choose a car type:</label>
-          <select
-            id="car-type-select"
-            value={selectedCarType}
-            onChange={(e) => setSelectedCarType(e.target.value)}
-            className="form-select mt-1 block w-full"
+            {isEditing ? "Update" : "Add"}
+          </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              setSelectedStation("");
+              setSelectedAssociation("");
+              setPlate("");
+              setSelectedLevel("");
+              setRegistration("");
+              setSelectedNumber("");
+              setSelectedCarType("");
+              setIsEditing(false);
+              setEditVehicleId(null);
+            }}
+            className="bg-neutral-400 text-white px-4 py-2 rounded-md shadow-sm hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-300"
           >
-            <option value="">Select a car type</option>
-            {carTypes.map((carType) => (
-              <option key={carType.id} value={carType.id}>
-                {carType.name}
-              </option>
-            ))}
-          </select>
-
-          <label>Registration:</label>
-          <input
-            type="date"
-            value={registration}
-            onChange={(e) => setRegistration(e.target.value)}
-            className="form-input mt-1 block w-full"
-          />
+            Cancel
+          </Button>
         </div>
-      </div>
-
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={handleAddOrUpdateVehicle}
-          className="btn btn-primary mr-2"
-        >
-          {isEditing ? "Update" : "Add"}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            // Reset the form fields
-            setSelectedStation("");
-            setSelectedAssociation("");
-            setPlate("");
-            setSelectedLevel("");
-            setRegistration("");
-            setSelectedNumber("");
-            setSelectedCarType("");
-            setIsEditing(false);
-            setEditVehicleId(null);
-          }}
-          className="btn btn-secondary"
-        >
-          Cancel
-        </button>
-      </div>
-
-      <div className="mt-10">
-        <h2>Vehicle List</h2>
-        <table className="table-auto w-full mt-2">
-          <thead>
-            <tr>
-              <th>Station</th>
-              <th>Association</th>
-              <th>Plate Number</th>
-              <th>Level</th>
-              <th>Registration Date</th>
-              <th>Number of Passengers</th>
-              <th>Car Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((vehicle) => (
-              <tr key={vehicle.id}>
-                <td>
-                  {stations.find((s) => s.id === vehicle.station_id)?.name}
-                </td>
-                <td>
-                  {
-                    associations.find((a) => a.id === vehicle.association_id)
-                      ?.name
-                  }
-                </td>
-                <td>{vehicle.plate_number}</td>
-                <td>{levels.find((l) => l.id === vehicle.level)?.name}</td>
-                <td>{vehicle.registration_date}</td>
-                <td>{vehicle.number_of_passengers}</td>
-                <td>{carTypes.find((c) => c.id === vehicle.car_type)?.name}</td>
-                <td>
-                  <button
-                    onClick={() => handleEditVehicle(vehicle)}
-                    className="btn btn-sm btn-warning mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteVehicle(vehicle.id)}
-                    className="btn btn-sm btn-danger"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      </Form>
     </div>
   );
 };
