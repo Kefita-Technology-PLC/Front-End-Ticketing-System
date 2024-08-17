@@ -1,283 +1,241 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useState, useEffect, useCallback } from "react";
+import TableShow from "./shared/TableShow";
+import FormInputSelect from "../inputs/FormInputSelect";
 
-const Vehicle = ({
-  stations = [],
-  setStations,
-  selectedStation,
-  setSelectedStation,
-}) => {
+const Vehicle = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [formData, setFormData] = useState({
+    plate_number: '',
+    code: '',
+    level: '',
+    number_of_passengers: '',
+    car_type: '',
+    station_name: '',
+    association_name: '',
+    deployment_line_id: '',
+  });
+  const [stations, setStations] = useState([]);
   const [associations, setAssociations] = useState([]);
   const [carTypes, setCarTypes] = useState([]);
-  const [levels, setLevels] = useState([]);
-  const [plate, setPlate] = useState("");
-  const [registration, setRegistration] = useState("");
-  const [selectedAssociation, setSelectedAssociation] = useState("");
-  const [selectedCarType, setSelectedCarType] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedNumber, setSelectedNumber] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [editVehicleId, setEditVehicleId] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [deploymentLines, setDeploymentLines] = useState([]);
 
-  const numbers = Array.from({ length: 20 }, (_, i) => i + 1);
+  const handleChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const fetchData = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      const [
+        vehiclesData,
+        stationData,
+        associationData,
+        carTypeData,
+        deploymentLineData,
+      ] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/get-stations`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/associations`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/car-types`),
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/deployment-lines`, { headers }),
+      ]);
+
+      setVehicles(vehiclesData.data.data || []);
+      setStations(stationData.data.data || []);
+      setAssociations(associationData.data.data || []);
+      setCarTypes(carTypeData.data.data.car_type || []);
+      setDeploymentLines(deploymentLineData.data.data || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://api.example.com/data");
-        const data = await response.json();
-
-        setStations(data.stations || []);
-        setAssociations(data.associations || []);
-        setCarTypes(data.carTypes || []);
-        setLevels(data.levels || []);
-        setVehicles(data.vehicles || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setStations([]);
-        setAssociations([]);
-        setCarTypes([]);
-        setLevels([]);
-        setVehicles([]);
-      }
-    };
-
     fetchData();
-  }, [setStations, setAssociations, setCarTypes, setLevels]);
+  }, [fetchData]);
 
-  const handleSelectChange = (event) => {
-    setSelectedNumber(event.target.value);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
 
-  const handleAddOrUpdateVehicle = () => {
-    const newVehicle = {
-      id: isEditing ? editVehicleId : Date.now(),
-      station_id: selectedStation,
-      association_id: selectedAssociation,
-      plate_number: plate,
-      level: selectedLevel,
-      registration_date: registration,
-      number_of_passengers: selectedNumber,
-      car_type: selectedCarType,
-    };
-
-    if (isEditing) {
-      setVehicles((prevVehicles) =>
-        prevVehicles.map((vehicle) =>
-          vehicle.id === editVehicleId ? newVehicle : vehicle
-        )
-      );
-      setIsEditing(false);
-      setEditVehicleId(null);
-    } else {
-      setVehicles([...vehicles, newVehicle]);
+    try {
+      console.log(formData)
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles` ,formData, {headers},);
+    } catch (error) {
+      if (error.response && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+      }
     }
-
-    // Reset the form fields
-    setSelectedStation("");
-    setSelectedAssociation("");
-    setPlate("");
-    setSelectedLevel("");
-    setRegistration("");
-    setSelectedNumber("");
-    setSelectedCarType("");
   };
 
-  const handleEditVehicle = (vehicle) => {
-    setSelectedStation(vehicle.station_id);
-    setSelectedAssociation(vehicle.association_id);
-    setPlate(vehicle.plate_number);
-    setSelectedLevel(vehicle.level);
-    setRegistration(vehicle.registration_date);
-    setSelectedNumber(vehicle.number_of_passengers);
-    setSelectedCarType(vehicle.car_type);
-    setIsEditing(true);
-    setEditVehicleId(vehicle.id);
-  };
+  const levels = [
+    { id: 1, name: 'level_1' },
+    { id: 2, name: 'level_2' },
+    { id: 3, name: 'level_3' },
+  ];
 
-  const handleDeleteVehicle = (vehicleId) => {
-    setVehicles((prevVehicles) =>
-      prevVehicles.filter((vehicle) => vehicle.id !== vehicleId)
-    );
-  };
+  const codes =  [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
+  ];
+
+  const passengers = [
+    { id: 1, name: '4' },
+    { id: 2, name: '6' },
+    { id: 3, name: '12' },
+    { id: 4, name: '24' },
+    { id: 5, name: '64' },
+    { id: 6, name: '70' },
+  ];
 
   return (
     <div>
-      <div className="flex m-7 justify-around gap-7">
-        <div className="flex flex-col gap-2 w-full">
-          <label htmlFor="station-select">Choose a station:</label>
-          <select
-            id="station-select"
-            value={selectedStation}
-            onChange={(e) => setSelectedStation(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select a station</option>
-            {stations.map((station) => (
-              <option key={station.id} value={station.id}>
-                {station.name}
-              </option>
-            ))}
-          </select>
+      <form onSubmit={handleSubmit}>
+        <div className="flex m-7 justify-around gap-7">
+          <div className="flex flex-col gap-2 w-full">
+            <FormInputSelect
+              name="station_name"
+              value={formData.station_name}
+              handle={handleChange}
+              error={errors.station_name}
+              optionValue={stations}
+              label="Choose a Station"
+              startValue="Select a station"
+              isName={true}
+            />
 
-          <label htmlFor="association-select">Association name:</label>
-          <select
-            id="association-select"
-            value={selectedAssociation}
-            onChange={(e) => setSelectedAssociation(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select an association</option>
-            {associations.map((association) => (
-              <option key={association.id} value={association.id}>
-                {association.name}
-              </option>
-            ))}
-          </select>
+            <FormInputSelect
+              name="association_name"
+              value={formData.association_name}
+              handle={handleChange}
+              error={errors.association_name}
+              optionValue={associations}
+              label="Association name"
+              startValue="Select an association"
+              isName={true}
+            />
 
-          <label>Plate number:</label>
-          <input
-            type="text"
-            value={plate}
-            onChange={(e) => setPlate(e.target.value)}
-            className="form-input mt-1 block w-full"
-          />
+            <label>Plate number:</label>
+            <input
+              type="text"
+              value={formData.plate_number}
+              name="plate_number"
+              onChange={handleChange}
+              className="form-input p-2 text-[15px] block w-full"
+              required
+            />
+            {errors.plate_number && (
+              <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.plate_number}</p>
+            )}
 
-          <label htmlFor="level-select">Choose a level:</label>
-          <select
-            id="level-select"
-            value={selectedLevel}
-            onChange={(e) => setSelectedLevel(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select a level</option>
-            {levels.map((level) => (
-              <option key={level.id} value={level.id}>
-                {level.name}
-              </option>
-            ))}
-          </select>
+            <FormInputSelect
+              name="code"
+              value={formData.code}
+              handle={handleChange}
+              error={errors.code}
+              optionValue={codes}
+              label="Plate Number Code"
+              startValue="Select an plate no code"
+              isName={true}
+            />
+
+            <FormInputSelect
+              name="level"
+              value={formData.level}
+              handle={handleChange}
+              error={errors.level}
+              optionValue={levels}
+              label="Choose a level"
+              startValue="Select a level"
+              isName={true}
+              isUnderscore={true}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 w-full">
+            <FormInputSelect
+              name="number_of_passengers"
+              value={formData.number_of_passengers}
+              handle={handleChange}
+              error={errors.number_of_passengers}
+              optionValue={passengers}
+              label="Passenger number"
+              startValue="Select a number"
+              isName={true}
+              isUnderscore={false}
+              optionalWord="People"
+            />
+
+            <label htmlFor="car-type-select">Choose a car type:</label>
+            <select
+              id="car-type-select"
+              value={formData.car_type}
+              name="car_type"
+              onChange={handleChange}
+              className="form-select text-[15px] block w-full p-2"
+              required
+            >
+              <option value="">Select a car type</option>
+              {carTypes.map((carType) => (
+                <option key={carType} value={carType} className="capitalize">
+                  {carType.replace('_', ' ')}
+                </option>
+              ))}
+            </select>
+            {errors.car_type && (
+              <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.car_type}</p>
+            )}
+
+            <label htmlFor="deployment-line-select">Choose a deployment line:</label>
+            <select
+              id="deployment-line-select"
+              value={formData.deployment_line_id}
+              name="deployment_line_id"
+              onChange={handleChange}
+              className="form-select text-[15px] p-2 block w-full"
+              required
+            >
+              <option value="">Select a deployment line</option>
+              {deploymentLines.map((deploymentLine) => (
+                <option key={deploymentLine.id} value={deploymentLine.id} className="capitalize">
+                  {deploymentLine.origin} - {deploymentLine.destination}
+                </option>
+              ))}
+            </select>
+            {errors.car_type && (
+              <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.car_type}</p>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2 w-full">
-          <label>Passenger number:</label>
-          <select
-            id="number-select"
-            value={selectedNumber}
-            onChange={handleSelectChange}
-            className="form-select mt-1 block w-full"
+        <div className="p-3 pl-8">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn outline outline-1 p-2 rounded-md text-[15px] btn-primary mr-2"
           >
-            <option value="">Select a number</option>
-            {numbers.map((number) => (
-              <option key={number} value={number}>
-                {number}
-              </option>
-            ))}
-          </select>
-
-          <label htmlFor="car-type-select">Choose a car type:</label>
-          <select
-            id="car-type-select"
-            value={selectedCarType}
-            onChange={(e) => setSelectedCarType(e.target.value)}
-            className="form-select mt-1 block w-full"
-          >
-            <option value="">Select a car type</option>
-            {carTypes.map((carType) => (
-              <option key={carType.id} value={carType.id}>
-                {carType.name}
-              </option>
-            ))}
-          </select>
-
-          <label>Registration:</label>
-          <input
-            type="date"
-            value={registration}
-            onChange={(e) => setRegistration(e.target.value)}
-            className="form-input mt-1 block w-full"
-          />
+            Submit
+          </button>
         </div>
-      </div>
-
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={handleAddOrUpdateVehicle}
-          className="btn btn-primary mr-2"
-        >
-          {isEditing ? "Update" : "Add"}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            // Reset the form fields
-            setSelectedStation("");
-            setSelectedAssociation("");
-            setPlate("");
-            setSelectedLevel("");
-            setRegistration("");
-            setSelectedNumber("");
-            setSelectedCarType("");
-            setIsEditing(false);
-            setEditVehicleId(null);
-          }}
-          className="btn btn-secondary"
-        >
-          Cancel
-        </button>
-      </div>
+      </form>
 
       <div className="mt-10">
-        <h2>Vehicle List</h2>
-        <table className="table-auto w-full mt-2">
-          <thead>
-            <tr>
-              <th>Station</th>
-              <th>Association</th>
-              <th>Plate Number</th>
-              <th>Level</th>
-              <th>Registration Date</th>
-              <th>Number of Passengers</th>
-              <th>Car Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((vehicle) => (
-              <tr key={vehicle.id}>
-                <td>
-                  {stations.find((s) => s.id === vehicle.station_id)?.name}
-                </td>
-                <td>
-                  {
-                    associations.find((a) => a.id === vehicle.association_id)
-                      ?.name
-                  }
-                </td>
-                <td>{vehicle.plate_number}</td>
-                <td>{levels.find((l) => l.id === vehicle.level)?.name}</td>
-                <td>{vehicle.registration_date}</td>
-                <td>{vehicle.number_of_passengers}</td>
-                <td>{carTypes.find((c) => c.id === vehicle.car_type)?.name}</td>
-                <td>
-                  <button
-                    onClick={() => handleEditVehicle(vehicle)}
-                    className="btn btn-sm btn-warning mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteVehicle(vehicle.id)}
-                    className="btn btn-sm btn-danger"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableShow
+          caption="Vehicles"
+          tableHeads={['No', 'Station', 'Plate Number', 'Association', 'Deployment Line', 'Code', 'Level', 'Number of Passengers', 'Car Type', 'Registered Date']}
+          vehicles={vehicles}
+        />
       </div>
     </div>
   );
