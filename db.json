@@ -1,0 +1,168 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "superadmin@example.com",
+      "name": "Super Admin",
+      "role": "super_admin",
+      "password": "superadminpassword"
+    },
+    {
+      "id": "2",
+      "email": "admin@example.com",
+      "name": "Admin User",
+      "role": "admin",
+      "station_id": 1,
+      "password": "adminpassword"
+    },
+    {
+      "id": "3",
+      "email": "seller@example.com",
+      "name": "Ticket Seller",
+      "role": "seller",
+      "station_id": 1,
+      "password": "sellerpassword"
+    }
+  ],
+  "stations": [
+    {
+      "id": "1",
+      "name": "Station A",
+      "location": "Location A"
+    },
+    {
+      "id": "2",
+      "name": "Station B",
+      "location": "Location B"
+    }
+  ],
+  "associations": [
+    {
+      "id": "1",
+      "station_id": 1,
+      "name": "Association A"
+    },
+    {
+      "id": "2",
+      "station_id": 2,
+      "name": "Association B"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "1",
+      "station_id": 1,
+      "association_id": 1,
+      "plate_number": "ABC123",
+      "level": "Level 1",
+      "registration_date": "2024-01-01",
+      "number_of_passengers": 4,
+      "car_type": "Sedan"
+    },
+    {
+      "id": "2",
+      "station_id": 2,
+      "association_id": 2,
+      "plate_number": "XYZ789",
+      "level": "Level 2",
+      "registration_date": "2024-02-01",
+      "number_of_passengers": 6,
+      "car_type": "SUV"
+    },
+    {
+      "id": "caba",
+      "station_id": "1",
+      "association_id": "1",
+      "plate_number": "6756",
+      "level": "Level 2",
+      "registration_date": "2024-08-30",
+      "number_of_passengers": 7,
+      "car_type": "minibus"
+    },
+    {
+      "id": "bcbe",
+      "station_id": "1",
+      "association_id": "2",
+      "plate_number": "6464",
+      "level": "Level 2",
+      "registration_date": "2024-08-31",
+      "number_of_passengers": 15,
+      "car_type": "Bus"
+    }
+  ],
+  "tariffs": [
+    {
+      "id": "1",
+      "station_id": 1,
+      "destination_id": 1,
+      "distance": 10,
+      "number_of_passengers": 4,
+      "level1_price": 100,
+      "level2_price": 150,
+      "level3_price": 200
+    },
+    {
+      "id": "2",
+      "station_id": 2,
+      "destination_id": 2,
+      "distance": 20,
+      "number_of_passengers": 6,
+      "level1_price": 200,
+      "level2_price": 250,
+      "level3_price": 300
+    }
+  ],
+  "tickets": [
+    {
+      "id": "1",
+      "seller_id": 3,
+      "vehicle_id": 1,
+      "level": "Level 1",
+      "number_of_passengers": 4,
+      "destination_id": 1,
+      "price": 100,
+      "service_price": 10,
+      "sold_status": "sold"
+    },
+    {
+      "id": "2",
+      "seller_id": 3,
+      "vehicle_id": 2,
+      "level": "Level 2",
+      "number_of_passengers": 6,
+      "destination_id": 2,
+      "price": 200,
+      "service_price": 20,
+      "sold_status": "sold"
+    }
+  ],
+  "employees": [
+    {
+      "id": "1",
+      "station_id": 1,
+      "name": "John Doe",
+      "phone_no": "+251912345678",
+      "gender": "Male",
+      "hire_date": "2024-01-10",
+      "salary": 5000
+    },
+    {
+      "id": "2",
+      "station_id": 2,
+      "name": "Jane Smith",
+      "phone_no": "+251912345679",
+      "gender": "Female",
+      "hire_date": "2024-02-15",
+      "salary": 6000
+    },
+    {
+      "id": "7ee9",
+      "station_id": "2",
+      "name": "nahom",
+      "phone": "921306469",
+      "gender": "Female",
+      "hire_date": "2024-08-29",
+      "salary": "500"
+    }
+  ]
+}
