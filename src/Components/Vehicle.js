@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
 import TableShow from "./shared/TableShow";
 import FormInputSelect from "../inputs/FormInputSelect";
+import TopHeaders from "../headers/TopHeaders";
 
 const Vehicle = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -101,9 +102,11 @@ const Vehicle = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <TopHeaders topTitle={'Vehicles'} />
+      <form onSubmit={handleSubmit} className=" p-3 rounded-md">
+        <h2 >Add Vehicles</h2>
         <div className="flex m-7 justify-around gap-7">
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
             <FormInputSelect
               name="station_name"
               value={formData.station_name}
@@ -126,13 +129,15 @@ const Vehicle = () => {
               isName={true}
             />
 
+            <hr />
+
             <label>Plate number:</label>
             <input
               type="text"
               value={formData.plate_number}
               name="plate_number"
               onChange={handleChange}
-              className="form-input p-2 text-[15px] block w-full"
+              className="form-input text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required
             />
             {errors.plate_number && (
@@ -183,7 +188,7 @@ const Vehicle = () => {
               value={formData.car_type}
               name="car_type"
               onChange={handleChange}
-              className="form-select text-[15px] block w-full p-2"
+              className="form-select text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required
             >
               <option value="">Select a car type</option>
@@ -203,7 +208,7 @@ const Vehicle = () => {
               value={formData.deployment_line_id}
               name="deployment_line_id"
               onChange={handleChange}
-              className="form-select text-[15px] p-2 block w-full"
+              className="form-select text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required
             >
               <option value="">Select a deployment line</option>
@@ -223,10 +228,10 @@ const Vehicle = () => {
           <button
             type="submit"
             onClick={handleSubmit}
-            className="btn outline outline-1 p-2 rounded-md text-[15px] btn-primary mr-2"
-          >
-            Submit
-          </button>
+            className="btn text-white bg-blue-500  text-[15px] btn-primary mr-2  rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              Submit
+            </button>
         </div>
       </form>
 

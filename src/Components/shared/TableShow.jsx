@@ -46,7 +46,7 @@ export default function TableShow({caption, tableHeads, vehicles}) {
             <TableCell className={' capitalize'}>{vehicle.station.name.replace('-', ' ')}</TableCell>
             <TableCell className="font-medium">{vehicle.plate_number}</TableCell>
             <TableCell>{vehicle.association.name}</TableCell>
-            <TableCell>{vehicle.deployment_line.origin} - {vehicle.deployment_line.destination}</TableCell>
+            <TableCell className={'capitalize'}>{vehicle.deployment_line.origin} - {vehicle.deployment_line.destination}</TableCell>
             <TableCell>{vehicle.code}</TableCell>
             <TableCell >{vehicle.level.replace('_', ' ').toUpperCase()}</TableCell>
             <TableCell>{vehicle.number_of_passengers}</TableCell>

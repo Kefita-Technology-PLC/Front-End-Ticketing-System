@@ -1,5 +1,4 @@
 import React from 'react'
-
 function FormInputSelect({
   name, 
   value, 
@@ -15,12 +14,13 @@ function FormInputSelect({
   return (
     <div>
       <label htmlFor={name} className="">{label}</label>
+
       <select
         id={name}
         value={value}
         name={name}
         onChange={handle}
-        className="form-select text-[15px] block w-full p-2"
+        className="form-selectbg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
         required
       >
         <option value="" className="">{startValue}</option>

@@ -34,9 +34,9 @@ function App() {
 
     fetchData();
   }, [setStations]);
-
+// 04512247
   return (
-    <div className=" font-roboto">
+    <div className=" font-roboto max-w-[1450px] mx-auto">
       <Router>
         <Routes>
           <Route path="/" element={
