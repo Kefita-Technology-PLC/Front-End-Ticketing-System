@@ -21,10 +21,10 @@ export default function TableShow({caption, tableHeads, vehicles}) {
   },[tableHeads, vehicles])
 
   return (
-    <Table>
+    <Table className={''}>
       <TableCaption>{''}</TableCaption>
-      <TableHeader>
-        <TableRow>
+      <TableHeader className={' hover:text-white '}>
+        <TableRow className={'hover:text-white'}>
         {tableHeadsInner.map((tableHead, index) => (
           <TableHead
             key={index}
@@ -32,7 +32,7 @@ export default function TableShow({caption, tableHeads, vehicles}) {
               index === 0 ? 'w-[100px]' : '' 
             } ${
               index === tableHeads.length - 1 ? 'text-right' : ''
-            }`}
+            } `}
           >
             {tableHead}
           </TableHead>

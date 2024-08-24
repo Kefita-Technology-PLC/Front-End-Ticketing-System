@@ -28,7 +28,7 @@ const Login = () => {
 
   const login = async (phoneNumber, password) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/v1/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
         phone_no: phoneNumber, 
         password: password
       });
