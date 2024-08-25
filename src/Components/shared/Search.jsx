@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import DeleteFrom from '../../vehicles-subcomponents/DeleteFrom';
 
 function Search({ vehiclesData }) {
   const [vehicles, setVehicles] = useState(vehiclesData || []);
@@ -19,11 +20,13 @@ function Search({ vehiclesData }) {
   const [deploymentLines, setDeploymentLines] = useState([]);
 
   const [editVehicleId, setEditVehicleId] = useState(null);
+  const [deleteVehicleId, setDeleteVehicleId] = useState(null)
   const [errors, setErrors] = useState({});
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 
     // State for editing vehicle
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
   const [formData, setFormData] = useState({
     id: null,
     station_name: '',
@@ -68,7 +71,7 @@ function Search({ vehiclesData }) {
             vehicle.id === formData.id ? response.data.data : vehicle
           )
         );
-        console.log(response.data);
+        // console.log(response.data);
         setEditVehicleId(null);
         setIsEditing(false); // Exit editing mode
         setFormData({});
@@ -104,10 +107,10 @@ function Search({ vehiclesData }) {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
   
-    if (editVehicleId) {
+    if (editVehicleId || deleteVehicleId) {
       setLoading(true);
       axios
-        .get(`${apiEndpoint}/v1/vehicles/${editVehicleId}`, { headers })
+        .get(`${apiEndpoint}/v1/vehicles/${editVehicleId || deleteVehicleId}`, { headers })
         .then((response) => {
           
           setFormData({
@@ -126,11 +129,11 @@ function Search({ vehiclesData }) {
           setLoading(false);
         })
         .catch((err) => {
-          setError('Failed to fetch vehicle data.');
+          setError('Failed to fetch vehicle data.', err);
           setLoading(false);
         });
     }
-  }, [editVehicleId]);
+  }, [editVehicleId, deleteVehicleId]);
   
 
   const levels = [
@@ -154,14 +157,23 @@ function Search({ vehiclesData }) {
     { id: 4, name: '24' },
     { id: 5, name: '64' },
     { id: 6, name: '70' },
+
   ];
 
   const handleEditClick = (vehicleId) => {
     setEditVehicleId(vehicleId); // Set the vehicle ID to edit
     setError(null);
     setIsEditing(true); // Set editing mode to true
+    setIsDeleting(false)
     toggleFormVisibility()
   };
+
+  const handleDeleteClick = (deleteVehicleId) => {
+    setDeleteVehicleId(deleteVehicleId)
+    setIsDeleting(true)
+    setIsEditing(false)
+    toggleFormVisibility()
+  }
   
 
   return (
@@ -208,7 +220,7 @@ function Search({ vehiclesData }) {
                   <td className='px-4 py-2 capitalize'>{vehicle.car_type.replace('_', ' ')}</td>
                   <td className='px-4 py-2 text-xs'>
                     <button onClick={() => handleEditClick(vehicle.id)}className='text-blue-500'><FontAwesomeIcon icon={faEdit} /> Edit</button>
-                    <button className='text-red-500 ml-2'><FontAwesomeIcon icon={faTrash} />Delete</button>
+                    <button onClick={()=>handleDeleteClick(vehicle.id)} className='text-red-500 ml-2'><FontAwesomeIcon icon={faTrash} />Delete</button>
                   </td>
                 </tr>
               ))
@@ -237,6 +249,12 @@ function Search({ vehiclesData }) {
           carTypes={carTypes}
           deploymentLines={deploymentLines}
           cancelEdit={cancelEdit}
+          />
+        )}
+        {isDeleting && (
+          <DeleteFrom 
+            handleX={handleX}
+            formData={formData}
           />
         )}
     </div>
