@@ -41,6 +41,7 @@ function App() {
       console.error('Error fetching data:', error)
     }
    }
+
    useEffect(()=>{
     fetchData()
   },[])
@@ -66,7 +67,7 @@ function App() {
                     setStations={setStations} 
                   />
                 }>
-                  <Route index element={<ShowVehicle  vehiclesData={vehicles}/>}/>
+                  <Route index element={<ShowVehicle />}/>
                   <Route path='add' element={<AddVehicle/>} />
                   <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
               </Route>
