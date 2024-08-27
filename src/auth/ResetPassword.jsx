@@ -35,8 +35,7 @@ function ResetPassword() {
     } catch (error) {
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
-        console.log(error)
-        console.log(error.response.data.errors)
+       
       }
     }
   };

@@ -29,6 +29,7 @@
     "react-phone-number-input": "^3.4.5",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
+    "react-table-component": "^0.9.8",
     "recharts": "^2.12.7",
     "shadcn": "^1.0.0",
     "shadcn-ui": "^0.8.0",

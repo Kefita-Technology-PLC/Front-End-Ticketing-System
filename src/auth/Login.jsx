@@ -32,17 +32,14 @@ const Login = () => {
         phone_no: phoneNumber, 
         password: password
       });
-  
       const token = response.data.token;
 
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       if (rememberMe) {
-        // Save credentials if "Remember Me" is checked
         localStorage.setItem('phoneNumber', phoneNumber);
         localStorage.setItem('password', password);
       } else {
-        // Clear credentials if "Remember Me" is unchecked
         localStorage.removeItem('phoneNumber');
         localStorage.removeItem('password');
       }

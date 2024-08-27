@@ -54,12 +54,11 @@ export default function Sidebar() {
 
 function SidebarLink({ link }) {
   const { pathname } = useLocation();
-
   return (
     <Link
       to={link.path}
       className={classNames(
-        pathname === link.path
+        pathname.startsWith(link.path) 
           ? "bg-neutral-700 text-white"
           : "text-neutral-400",
         linkClass
