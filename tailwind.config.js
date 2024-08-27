@@ -1,16 +1,10 @@
-const { fontFamily } = require("tailwindcss/defaultTheme")
+const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
   darkMode: ["class"],
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
+  // darkMode: false, // or 'media' or 'class'
   theme: {
-<<<<<<< HEAD
-    extend: {
-      colors: {
-        "custom-pink": "#1D8A99",
-        "custom-blue": "#",
-=======
     container: {
       center: true,
       padding: "2rem",
@@ -20,6 +14,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        customBrown: "#C57B57",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -28,7 +23,17 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          "50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -62,7 +67,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
-        roboto:["Roboto", "sans-serif"]
+        roboto: ["Roboto", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
@@ -77,7 +82,6 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
->>>>>>> 83eb550f0b7c33f3fce36cffa5f7071b0671932d
       },
     },
   },
