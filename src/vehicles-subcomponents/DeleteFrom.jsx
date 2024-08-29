@@ -4,7 +4,7 @@ import React from 'react'
 import { faTrash, faX } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 
-function DeleteFrom({handleX, formData}) {
+function DeleteFrom({handleX, formData, changeFlag}) {
   const {isFormVisible, toggleFormVisibility} = useBlur()
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 
@@ -23,6 +23,7 @@ function DeleteFrom({handleX, formData}) {
       console.error("Error", err)
     })
     toggleFormVisibility()
+    changeFlag()
   }
 
   return (

@@ -24,8 +24,8 @@ function FormInputSelect({
         required
       >
         <option value="" className="">{startValue}</option>
-        {optionValue.map((option) => (
-          <option key={option.id} value={isName ? option.name : option.id} className="capitalize">
+        {optionValue.map((option, index) => (
+          <option key={option.id} value={isName ? option.name : option.id} className="capitalize" >
             {!isUnderscore ? option.name.replace('-', ' '): option.name.replace('_', ' ')} {optionalWord?optionalWord:''}
           </option>
         ))}

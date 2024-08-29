@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import axios from "axios"
+import React, { useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import axios from 'axios';
 import FormInputSelect from '../inputs/FormInputSelect';
-
+import { levels, codes, passengers } from '../data/VehicleData';
+ import SuccessMessage from '../Components/shared/SuccessMessage'; // Import the SuccessMessage component
+import { apiEndpoint, headers } from '../data/AuthenticationData';
 
 function AddVehicle() {
-
-  const [stations, setStations] = useState([]);
-  const [associations, setAssociations] = useState([]);
-  const [carTypes, setCarTypes] = useState([]);
+  const {stations, associations, carTypes, deploymentLines, handleRefresh} = useOutletContext()
   const [errors, setErrors] = useState({});
-  const [deploymentLines, setDeploymentLines] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [showSuccess, setShowSuccess] = useState(false); // Success message state
+
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
   const handleChange = (e) => {
     setFormData((prevData) => ({
@@ -18,34 +21,6 @@ function AddVehicle() {
     }));
   };
 
-  const fetchData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-      const [
-        stationData,
-        associationData,
-        carTypeData,
-        deploymentLineData,
-      ] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/get-stations`, { headers }),
-        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/associations`, { headers }),
-        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/car-types`),
-        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/deployment-lines`, { headers }),
-      ]);
-
-      setStations(stationData.data.data || []);
-      setAssociations(associationData.data.data || []);
-      setCarTypes(carTypeData.data.data.car_type || []);
-      setDeploymentLines(deploymentLineData.data.data || []);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const [formData, setFormData] = useState({
     plate_number: '',
@@ -57,49 +32,34 @@ function AddVehicle() {
     association_name: '',
     deployment_line_id: '',
   });
-  const levels = [
-    { id: 1, name: 'level_1' },
-    { id: 2, name: 'level_2' },
-    { id: 3, name: 'level_3' },
-  ];
 
-  const codes =  [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 3, name: '3' },
-    { id: 4, name: '4' },
-    { id: 5, name: '5' },
-  ];
-
-  const passengers = [
-    { id: 1, name: '4' },
-    { id: 2, name: '6' },
-    { id: 3, name: '12' },
-    { id: 4, name: '24' },
-    { id: 5, name: '64' },
-    { id: 6, name: '70' },
-  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
+    setLoading(true); // Set loading to true
     try {
-      console.log(formData)
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles` ,formData, {headers},);
+  
+      await axios.post(`${apiEndpoint}/v1/vehicles`, formData, { headers });
+      setLoading(false); // Set loading to false
+      setShowSuccess(true); // Show success message
+      setTimeout(() => {
+        setShowSuccess(false); // Hide success message after 3 seconds
+      }, 3000);
+      handleRefresh()
+        navigate('/Vehicle'); // Redirect to 
+  
     } catch (error) {
+      setLoading(false); // Set loading to false
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
       }
     }
   };
 
-
   return (
-    <form onSubmit={handleSubmit} className=" p-3 rounded-md">
-      <h2 >Add Vehicles</h2>
+    <form onSubmit={handleSubmit} className="p-3 rounded-md">
+      <h2>Add Vehicles</h2>
       <div className="flex m-7 justify-around gap-7">
         <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
           <FormInputSelect
@@ -132,7 +92,7 @@ function AddVehicle() {
             value={formData.plate_number}
             name="plate_number"
             onChange={handleChange}
-            className="form-input text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="form-input text-[15px] border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
             required
           />
           {errors.plate_number && (
@@ -146,7 +106,7 @@ function AddVehicle() {
             error={errors.code}
             optionValue={codes}
             label="Plate Number Code"
-            startValue="Select an plate no code"
+            startValue="Select a plate no code"
             isName={true}
           />
 
@@ -183,7 +143,7 @@ function AddVehicle() {
             value={formData.car_type}
             name="car_type"
             onChange={handleChange}
-            className="form-select text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="form-select text-[15px] border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
             required
           >
             <option value="">Select a car type</option>
@@ -203,7 +163,7 @@ function AddVehicle() {
             value={formData.deployment_line_id}
             name="deployment_line_id"
             onChange={handleChange}
-            className="form-select text-[15px]  border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="form-select text-[15px] border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
             required
           >
             <option value="">Select a deployment line</option>
@@ -222,14 +182,18 @@ function AddVehicle() {
       <div className="p-3 pl-8">
         <button
           type="submit"
-          onClick={handleSubmit}
-          className="btn text-white bg-blue-500  text-[15px] btn-primary mr-2  rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            Submit
-          </button>
+          className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? 'Adding...' : 'Add Vehicle'}
+        </button>
       </div>
+
+      {showSuccess && <SuccessMessage slot={'Vehicle Added Successfully'} />} {/* Display SuccessMessage component */}
     </form>
-  )
+  );
 }
 
-export default AddVehicle
+export default AddVehicle;
+
+

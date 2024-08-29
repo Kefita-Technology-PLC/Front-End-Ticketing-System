@@ -1,38 +1,16 @@
-import axios from 'axios'
 import Search from '../Components/shared/Search'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useOutletContext } from 'react-router-dom'
+import 'react-loading-skeleton/dist/skeleton.css';  // Import Skeleton styles
 
-function DeleteOrUpdateVehicle({vehicleData}) {
-  const [vehicles, setVehicles] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  const fetchData = async ()=>{
-
-    try{
-      const token = localStorage.getItem('token')
-      const headers = {Authorization: `Bearer ${token}`}
-      setLoading(true)
-      const vehiclesData = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles`, {headers})
-
-      setLoading(false)
-      setVehicles(vehiclesData.data.data || [])
-
-    }catch (error){
-      console.error('Error Fetching Data: ', error)
-      setLoading(false);
-    }
-  }
-
-  useEffect(()=>{
-    fetchData()
-  }, [])
+function DeleteOrUpdateVehicle() {
+  const { vehicles} = useOutletContext();
 
   return (
     <div>
-      {loading && <p>Loading...</p>}
-      {!loading && <Search vehiclesData={vehicles} />}
+         <Search vehiclesData={vehicles} />
     </div>
-  )
+  );
 }
 
-export default DeleteOrUpdateVehicle
+export default DeleteOrUpdateVehicle;

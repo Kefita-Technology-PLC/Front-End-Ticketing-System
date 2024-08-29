@@ -1,40 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import TableShow from "../Components/shared/TableShow";
-import axios from 'axios';
+import { useOutletContext } from 'react-router-dom';
 
 function ShowVehicle() {
 
-  const [vehicles, setVehicles] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  const fetchData = async ()=>{
-
-    try{
-      const token = localStorage.getItem('token')
-      const headers = {Authorization: `Bearer ${token}`}
-      setLoading(true)
-      const vehiclesData = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles`, {headers})
-
-      setLoading(false)
-      setVehicles(vehiclesData.data.data || [])
-
-    }catch (error){
-      console.error('Error Fetching Data: ', error)
-      setLoading(false);
-    }
-  }
-
-  useEffect(()=>{
-    fetchData()
-  }, [])
+  const {loading, vehiclesPaginated} = useOutletContext();
 
   return (
     <div className="mt-10">
     {loading && <p>Loading...</p>}
     {!loading && <TableShow
       caption="Vehicles"
-      tableHeads={['No', 'Station', 'Plate Number', 'Association', 'Deployment Line', 'Code', 'Level', 'Number of Passengers', 'Car Type', 'Registered Date']}
-      vehicles={vehicles}
+      tableHeads={['No', 'Station', 'Plate Number', 'Association', 'Deployment Line', 'Code', 'Level', ' Passengers', 'Car Type', 'Registered Date']}
+      vehicles={vehiclesPaginated}
     /> }
   </div>
   )

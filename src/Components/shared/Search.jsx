@@ -1,28 +1,27 @@
 import EditForm from '../../vehicles-subcomponents/EditForm';
 import { useBlur } from '../../contexts/BlurContext';
-import FormInputSelect from '../../inputs/FormInputSelect';
-import { faDeleteLeft, faEdit, faTrash, faX } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import DeleteFrom from '../../vehicles-subcomponents/DeleteFrom';
+import Skeleton from 'react-loading-skeleton';
+import { headers, apiEndpoint } from "../../data/AuthenticationData";
+import { levels, codes } from '../../data/VehicleData';
 
 function Search({ vehiclesData }) {
-  const [vehicles, setVehicles] = useState(vehiclesData || []);
+  const {vehicles, setVehicles, handleRefresh, loading, stations} = useOutletContext()
+  const { isFormVisible, toggleFormVisibility } = useBlur();
+
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [searchInput, setSearchInput] = useState('');
-  const [loading, setLoading] = useState(false);
+ 
   const [error, setError] = useState(null);
-  const [stations, setStations] = useState([]);
-  const [associations, setAssociations] = useState([]);
-  const [carTypes, setCarTypes] = useState([]);
-  const [deploymentLines, setDeploymentLines] = useState([]);
-
+  const [errors, setErrors] = useState({})
+  const [selectedStation, setSelectedStation] = useState('');
   const [editVehicleId, setEditVehicleId] = useState(null);
   const [deleteVehicleId, setDeleteVehicleId] = useState(null)
-  const [errors, setErrors] = useState({});
-  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 
     // State for editing vehicle
   const [isEditing, setIsEditing] = useState(false);
@@ -39,15 +38,21 @@ function Search({ vehiclesData }) {
     deployment_line_id: ''
   });
 
-  const { isFormVisible, toggleFormVisibility } = useBlur();
+ 
 
   const handleX = ()=>{
     toggleFormVisibility()
+    setErrors({})
   }
 
   // Function to handle input change
   const handleInputChange = (event) => {
     setSearchInput(event.target.value);
+  };
+
+  // Handle changes in station dropdown
+  const handleStationChange = (event) => {
+    setSelectedStation(event.target.value);
   };
 
   // Handle form input changes
@@ -57,37 +62,57 @@ function Search({ vehiclesData }) {
 
 
   // Handle form submission for editing
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-    setLoading(true);
-    axios
-      .patch(`${apiEndpoint}/v1/vehicles/${formData.id}`, formData, { headers })
-      .then((response) => {
-        setLoading(false);
-        setVehicles((prevVehicles) =>
-          prevVehicles.map((vehicle) =>
-            vehicle.id === formData.id ? response.data.data : vehicle
-          )
-        );
-        // console.log(response.data);
-        setEditVehicleId(null);
-        setIsEditing(false); // Exit editing mode
-        setFormData({});
-      })
-      .catch((err) => {
-        setError('Failed to update vehicle.');
-        setLoading(false);
-      });
-  };
+
+
+    try{
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
   
+      const response = await axios.patch(`${apiEndpoint}/v1/vehicles/${formData.id}`, formData, { headers },)
+
+    
+      setVehicles((prevVehicles) =>
+        prevVehicles.map((vehicle) =>
+          vehicle.id === formData.id ? response.data.data : vehicle
+        )
+      );
+
+      setEditVehicleId(null);
+      setIsEditing(false); // Exit editing mode
+      setFormData({});
+      toggleFormVisibility()
+      handleRefresh();
+
+    }catch (error){
+    // Check if the error response is a validation error
+    if (error.response && error.response.status === 422) {
+      // Set the validation errors in the state
+      setErrors(error.response.data.errors || {});
+    } else {
+      // Set a generic error message if the error is not a validation error
+      setError('Failed to update vehicle.');
+    }
+  }
+  };
 
   // Handle cancel edit
   const cancelEdit = () => {
     setEditVehicleId(null);
     setFormData({});
   };
+
+  // Filter vehicles based on search input and selected station
+  useEffect(() => {
+    const lowerCasedSearch = selectedStation.toLowerCase();
+    if (selectedStation.trim() === ''){
+      setFilteredVehicles(vehicles)
+    }else{
+      setFilteredVehicles( vehicles.filter(vehicle => vehicle.station && vehicle.station.id === lowerCasedSearch))
+    }
+
+  }, [searchInput, selectedStation, vehicles]);
 
   // Filter vehicles whenever the search input changes
   useEffect(() => {
@@ -104,19 +129,16 @@ function Search({ vehiclesData }) {
 
   // Fetch vehicle data when editing starts
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
   
     if (editVehicleId || deleteVehicleId) {
-      setLoading(true);
       axios
         .get(`${apiEndpoint}/v1/vehicles/${editVehicleId || deleteVehicleId}`, { headers })
         .then((response) => {
           
           setFormData({
             id: response.data.data.id,
-            station_name: response.data.data.station.name,
-            association_name: response.data.data.association.name,
+            station_name: response.data.data.station ? response.data.data.station.name : '',
+            association_name: response.data.data.association ? response.data.data.association.name : '',
             plate_number: response.data.data.plate_number,
             code: response.data.data.code,
             level: response.data.data.level,
@@ -125,40 +147,15 @@ function Search({ vehiclesData }) {
             deployment_line_id: response.data.data.deployment_line_id,
           });
           
-          console.log(formData)
-          setLoading(false);
         })
         .catch((err) => {
           setError('Failed to fetch vehicle data.', err);
-          setLoading(false);
+    
+
         });
     }
   }, [editVehicleId, deleteVehicleId]);
   
-
-  const levels = [
-    { id: 1, name: 'level_1' },
-    { id: 2, name: 'level_2' },
-    { id: 3, name: 'level_3' },
-  ];
-
-  const codes =  [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 3, name: '3' },
-    { id: 4, name: '4' },
-    { id: 5, name: '5' },
-  ];
-
-  const passengers = [
-    { id: 1, name: '4' },
-    { id: 2, name: '6' },
-    { id: 3, name: '12' },
-    { id: 4, name: '24' },
-    { id: 5, name: '64' },
-    { id: 6, name: '70' },
-
-  ];
 
   const handleEditClick = (vehicleId) => {
     setEditVehicleId(vehicleId); // Set the vehicle ID to edit
@@ -174,13 +171,13 @@ function Search({ vehiclesData }) {
     setIsEditing(false)
     toggleFormVisibility()
   }
-  
+
 
   return (
     <div>
       <div className={`${isFormVisible ? 'blur-sm': ''}`}>
-        <div className='flex items-center m-4'>
-          <form onSubmit={(e) => e.preventDefault()}>
+        <div className=''>
+          <form onSubmit={(e) => e.preventDefault()} className='flex items-center m-4 gap-x-3' >
             <input 
               className='p-2 rounded-lg ring-1'
               type="search"
@@ -191,9 +188,6 @@ function Search({ vehiclesData }) {
           </form>
         </div>
 
-        {/* Display loading message */}
-        {loading && <p>Loading...</p>}
-
         {/* Display error message */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -201,7 +195,7 @@ function Search({ vehiclesData }) {
         <table className='w-full border-collapse'>
           <thead className='bg-gray-200'>
             <tr className='uppercase font-semibold'>
-              <th >#No</th>
+              <th>#No</th>
               <th className='px-4 py-2 text-left'>Plate Number</th>
               <th className='px-4 py-2 text-left'>Station</th>
               <th className='px-4 py-2 text-left'>Association</th>
@@ -210,24 +204,49 @@ function Search({ vehiclesData }) {
             </tr>
           </thead>
           <tbody>
-            {filteredVehicles.length > 0 ? (
-              filteredVehicles.map((vehicle,index) => (
-                <tr key={vehicle.id} className='bg-white border-b'>
-                  <td className='px-4 py-2'>{index+1}</td>
-                  <td className='px-4 py-2'>{vehicle.plate_number}</td>
-                  <td className='px-4 py-2'>{vehicle.station.name}</td>
-                  <td className='px-4 py-2'>{vehicle.association.name}</td>
-                  <td className='px-4 py-2 capitalize'>{vehicle.car_type.replace('_', ' ')}</td>
-                  <td className='px-4 py-2 text-xs'>
-                    <button onClick={() => handleEditClick(vehicle.id)}className='text-blue-500'><FontAwesomeIcon icon={faEdit} /> Edit</button>
-                    <button onClick={()=>handleDeleteClick(vehicle.id)} className='text-red-500 ml-2'><FontAwesomeIcon icon={faTrash} />Delete</button>
-                  </td>
+            {loading ? (
+              // Skeleton placeholders for each table row
+              Array.from({ length: 15 }).map((_, index) => (
+                <tr key={index} className='bg-white border-b'>
+                  <td className='px-4 py-2'><Skeleton width={20} /></td>
+                  <td className='px-4 py-2'><Skeleton width={'100%'} /></td>
+                  <td className='px-4 py-2'><Skeleton width={'100%'} /></td>
+                  <td className='px-4 py-2'><Skeleton width={'100%'} /></td>
+                  <td className='px-4 py-2'><Skeleton width={'100%'} /></td>
+                  <td className='px-4 py-2 '><Skeleton width={'100%'} /></td>
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="5" className='px-4 py-2 text-center'>No vehicle found with the given plate number.</td>
-              </tr>
+              filteredVehicles.length > 0 ? (
+                filteredVehicles.slice(0,15).map((vehicle, index) => {
+                  return(
+                  <tr key={vehicle.id} className='bg-white border-b'>
+                    <td className='px-4 py-2'>{index + 1}</td>
+                    <td className='px-4 py-2'>{vehicle.plate_number}</td>
+                    <td className='px-4 py-2'>{vehicle.station ? vehicle.station.name : 'Null'}</td>
+                    <td className='px-4 py-2'>{vehicle.association ? vehicle.association.name : 'Null'}</td>
+                    <td className='px-4 py-2'>{vehicle.car_type ? vehicle.car_type : 'Null'}</td>
+                    <td className='flex items-center space-x-4 px-4 py-2'>
+                      <button 
+                        className='px-2 py-1 rounded-md text-blue-500 text-xs'
+                        onClick={() => handleEditClick(vehicle.id)}
+                      >
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                      </button>
+                      <button 
+                        className='px-2 py-1 rounded-md text-red-500 text-xs'
+                        onClick={() => handleDeleteClick(vehicle.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> Delete
+                      </button>
+                    </td>
+                  </tr>
+                )})
+              ) : (
+                <tr>
+                  <td colSpan="6" className='text-center py-4'>No vehicles found.</td>
+                </tr>
+              )
             )}
           </tbody>
         </table>
@@ -238,16 +257,11 @@ function Search({ vehiclesData }) {
           <EditForm  
           handleSubmit={handleSubmit}
           handleX={handleX}
+          errors={errors}
           formData={formData}
           handleChange={handleChange}
-          errors={errors}
-          stations={stations}
-          associations={associations}
           codes={codes}
           levels={levels}
-          passengers={passengers}
-          carTypes={carTypes}
-          deploymentLines={deploymentLines}
           cancelEdit={cancelEdit}
           />
         )}
@@ -255,6 +269,7 @@ function Search({ vehiclesData }) {
           <DeleteFrom 
             handleX={handleX}
             formData={formData}
+            changeFlag={handleRefresh}
           />
         )}
     </div>

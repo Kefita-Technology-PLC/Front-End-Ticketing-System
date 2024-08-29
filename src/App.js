@@ -21,7 +21,7 @@ import mainImage from './assets/background-image.png'
 import ShowVehicle from "./vehicles-subcomponents/ShowVehicle";
 import AddVehicle from "./vehicles-subcomponents/AddVehicle";
 import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicle";
-import { BlurProvider, useBlur } from "./contexts/BlurContext";
+import {  useBlur } from "./contexts/BlurContext";
 
 
 

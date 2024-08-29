@@ -1,17 +1,41 @@
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { useBlur } from '../contexts/BlurContext';
-import React, { useRef } from 'react'
+import React, { useRef, useState  } from 'react'
 import FormInputSelect from '../inputs/FormInputSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useOutletContext } from 'react-router-dom';
+import ClipLoader from "react-spinners/ClipLoader";
 
-function EditForm({handleSubmit, handleX, formData, handleChange, errors, stations, associations, codes, levels, passengers, carTypes, deploymentLines, cancelEdit}) {
+function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels, errors}) {
 
-  const { isFormVisible, toggleFormVisibility } = useBlur();
+  let [color] = useState("#ffffff")
+  const { isFormVisible } = useBlur();
+  const {loadingEdit, stations, associations, numPassengers, carTypes, deploymentLines } = useOutletContext()
   const formRef = useRef(null)
+  console.log(errors)
+  // const [errors, setErrors] = useState({});
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
+
 
   return (
-    
-      <form onSubmit={handleSubmit}  className={`p-3 rounded-md fixed top-[30px] shadow-lg bg-white z-[100] left-1/2 transform -translate-x-1/2 blur-0 ${isFormVisible? '': 'hidden '}`} ref={formRef} id='edit-form'>
+    <div className={`p-3 rounded-md fixed top-[30px] shadow-lg bg-white z-[100] left-1/2 transform -translate-x-1/2 blur-0 ${isFormVisible? '': 'hidden '}`}>
+
+        {loadingEdit &&       
+        <ClipLoader
+        color={color}
+        loading={loadingEdit}
+        cssOverride={override}
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />}
+
+        {!loadingEdit && 
+        <form onSubmit={handleSubmit}   ref={formRef} id='edit-form'>
           <div className='flex justify-between p-3'>
             <h2 className='text-xl font-semibold'>Edit Vehicle</h2>
             <span onClick={handleX}><FontAwesomeIcon icon={faX} className=' hover:cursor-pointer' /></span>
@@ -82,18 +106,27 @@ function EditForm({handleSubmit, handleX, formData, handleChange, errors, statio
             </div>
 
             <div className="flex flex-col gap-2 w-full">
-              <FormInputSelect
-                name="number_of_passengers"
+              <label htmlFor="number_of_passengers">Passenger's number</label>
+              <select
+                id="number_of_passengers"
                 value={formData.number_of_passengers}
-                handle={handleChange}
-                error={errors.number_of_passengers}
-                optionValue={passengers}
-                label="Passenger number"
-                startValue="Select a number"
-                isName={true}
-                isUnderscore={false}
-                optionalWord="People"
-              />
+                name="number_of_passengers"
+                onChange={handleChange}
+                className="form-select text-[15px] border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              >
+                <option value="">Select a car type</option>
+                {numPassengers.map((passenger) => (
+                  <option key={passenger.id} value={passenger.number} className="capitalize">
+                    {passenger.number} People
+                  </option>
+                ))}
+              </select>
+              {errors.car_type && (
+                <p className="mt-1 text-sm text-red-500 dark:text-red-400">
+                  {errors.number_of_passengers}
+                </p>
+              )}
 
               <label htmlFor="car-type-select">Choose a car type:</label>
               <select
@@ -105,8 +138,8 @@ function EditForm({handleSubmit, handleX, formData, handleChange, errors, statio
                 required
               >
                 <option value="">Select a car type</option>
-                {carTypes.map((carType) => (
-                  <option key={carType} value={carType} className="capitalize">
+                {carTypes.map((carType, index) => (
+                  <option key={index} value={carType} className="capitalize">
                     {carType.replace('_', ' ')}
                   </option>
                 ))}
@@ -146,19 +179,14 @@ function EditForm({handleSubmit, handleX, formData, handleChange, errors, statio
               type="submit"
               form='edit-form'
               onClick={handleSubmit}
-              className="btn text-white bg-blue-500 text-[15px] btn-primary mr-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="btn text-white bg-blue-500 text-[15px] btn-primary mr-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-xs"
             >
               Update Vehicle
             </button>
-            <button
-              type="button"
-              onClick={cancelEdit}
-              className="btn text-white bg-gray-500 text-[15px] btn-secondary rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              Cancel
-            </button>
           </div>
-        </form>
+        </form>}
+    </div>
+
   )
 }
 
