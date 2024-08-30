@@ -15,7 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
@@ -28,11 +28,12 @@
     "react-icons": "^5.2.1",
     "react-loading-skeleton": "^3.4.0",
     "react-phone-number-input": "^3.4.5",
-    "react-router-dom": "^6.26.0",
+    "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.14.1",
     "react-table-component": "^0.9.8",
     "recharts": "^2.12.7",
+    "shadcn": "^1.0.0",
     "shadcn-ui": "^0.8.0",
     "styled-components": "^6.1.12",
     "tailwind-merge": "^2.4.0",
@@ -65,8 +66,8 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.40",
-    "tailwindcss": "^3.4.7"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10"
   }
 }
