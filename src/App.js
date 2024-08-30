@@ -24,9 +24,10 @@ import ShowVehicle from "./vehicles-subcomponents/ShowVehicle";
 import AddVehicle from "./vehicles-subcomponents/AddVehicle";
 import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicle";
 import {  useBlur } from "./contexts/BlurContext";
+import { apiEndpoint, headers } from "./data/AuthenticationData";
 
 
-import { BlurProvider, useBlur } from "./contexts/BlurContext";
+// import { BlurProvider, useBlur } from "./contexts/BlurContext";
 
 function App() {
   const { isFormVisible, toggleFormVisibility } = useBlur();
@@ -34,9 +35,7 @@ function App() {
   const [vehicles, setVehicles] = useState([]);
   const fetchData=async ()=>{
     try{
-      const token = localStorage.getItem('token')
-      const headers = {Authorization: `Bearer ${token}`}
-      const vehiclesData = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles`, {headers})
+      const vehiclesData = await axios.get(`${apiEndpoint}/v1/vehicles`, {headers})
  
       setVehicles(vehiclesData.data.data || [])
       // console.log(vehiclesData.data.data)
@@ -57,7 +56,7 @@ function App() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/v1/stations`
+        `${apiEndpoint}/v1/stations`, {headers}
       );
       setStations(response.data);
       setError(null);
@@ -71,10 +70,9 @@ function App() {
 
   const fetchVehicles = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
+
       const vehiclesData = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/v1/vehicles`,
+        `${apiEndpoint}/v1/vehicles`,
         { headers }
       );
 
@@ -105,30 +103,12 @@ function App() {
                 path="/Vehicle"
                 element={
                   <Vehicle
-                    station={stations}
-                    setStations={setStations} 
                   />
                 }>
                   <Route index element={<ShowVehicle />}/>
                   <Route path='add' element={<AddVehicle/>} />
                   <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
               </Route>
-                <Route
-                  path="/Vehicle"
-                  element={
-                    <Vehicle station={stations} setStations={setStations} />
-                  }
-                >
-                  <Route
-                    index
-                    element={<ShowVehicle vehiclesData={vehicles} />}
-                  />
-                  <Route path="add" element={<AddVehicle />} />
-                  <Route
-                    path="change"
-                    element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}
-                  />
-                </Route>
 
                 <Route
                   path="Association"
@@ -182,7 +162,7 @@ function App() {
               <Route path="reset-password" element={<ResetPassword />} />
             </Routes>
           </Router>
-        )}
+        
       </div>
     </div>
 

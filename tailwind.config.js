@@ -13,7 +13,6 @@ module.exports = {
       },
     },
     extend: {
-    extend: {
       container: {
         center: true,
         padding: "2rem",
@@ -94,6 +93,7 @@ module.exports = {
       },
     },
   },
+
   variants: {
     extend: {},
   },
