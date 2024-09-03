@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart } from "recharts";
+import * as React from "react"
+import { TrendingUp } from "lucide-react"
+import { Label, Pie, PieChart } from "recharts"
 
 import {
   Card,
@@ -11,28 +11,30 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "./ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "./ui/chart";
+} from './ui/chart'
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "#456789" },
-  { browser: "safari", visitors: 200, fill: "red" },
+export const description = "A donut chart with text"
+
+const chartDataColor = [
+  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
   { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 673, fill: "var(--color-edge)" },
+  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
   { browser: "other", visitors: 190, fill: "var(--color-other)" },
-];
+]
 
 const chartConfig = {
   visitors: {
-    label: "Visitors",
+    label: "Visitor",
   },
   chrome: {
-    label: "Chrome",
+    label: "Chromyeeee",
     color: "hsl(var(--chart-1))",
   },
   safari: {
@@ -51,18 +53,37 @@ const chartConfig = {
     label: "Other",
     color: "hsl(var(--chart-5))",
   },
-};
+} 
 
-export function Comp() {
+export function ComPie({title, description, boxTitle, countTypes, footer, loading}) {
+  const [chartData, setChartData] = React.useState([])
+
+  let chartDataInner = []
+
+  React.useEffect(()=>{
+    countTypes.forEach((countType, index) => {
+      chartDataInner.push({
+        browser: countType.type,
+        visitors: countType.count,
+        fill: `${chartDataColor[index].fill}`
+      })
+    });
+    setChartData(chartDataInner)
+  },[])
+
+  // console.log(chartData)
+
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
+  }, [chartDataInner])
+
+  console.log(totalVisitors)
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0" >
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      <CardHeader className="items-center pb-0">
+        <CardTitle>{title || 'Pie Chart'}</CardTitle>
+        <CardDescription>{ description || 'January - June 2024'}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -103,10 +124,10 @@ export function Comp() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          {boxTitle || 'Vistors'}
                         </tspan>
                       </text>
-                    );
+                    )
                   }
                 }}
               />
@@ -115,13 +136,13 @@ export function Comp() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
+        {/* <div className="flex items-center gap-2 font-medium leading-none">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
+        </div> */}
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          {footer || 'Showing total visitors for the last 6 months'}
         </div>
       </CardFooter>
     </Card>
-  );
+  )
 }

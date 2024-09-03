@@ -25,6 +25,7 @@ import AddVehicle from "./vehicles-subcomponents/AddVehicle";
 import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicle";
 import {  useBlur } from "./contexts/BlurContext";
 import { apiEndpoint, headers } from "./data/AuthenticationData";
+import PageNotFound from "./pages/PageNotFound";
 
 
 // import { BlurProvider, useBlur } from "./contexts/BlurContext";
@@ -92,13 +93,14 @@ function App() {
       <div className=" font-roboto max-w-[1600px] mx-auto bg-[#ffffffcc] scroll-auto">
         <Router>
           <Routes>
+            
             <Route path="/" element={
               <PrivateRoute>
                 <Layout />
               </PrivateRoute>
               }>
-              <Route path='/Dashboard' element={<Dashboard />} />
-
+            
+              <Route index element={<Dashboard />} />
               <Route
                 path="/Vehicle"
                 element={
@@ -110,59 +112,60 @@ function App() {
                   <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
               </Route>
 
-                <Route
-                  path="Association"
-                  element={
-                    <Association
-                      stations={stations}
-                      setStations={setStations}
-                    />
-                  }
-                />
+              <Route
+                path="Association"
+                element={
+                  <Association
+                    stations={stations}
+                    setStations={setStations}
+                  />
+                }
+              />
 
-                <Route path="Destination" element={<Destination />} />
+              <Route path="Destination" element={<Destination />} />
 
-                <Route
-                  path="Tarif"
-                  element={
-                    <Tariff stations={stations} setStations={setStations} />
-                  }
-                />
-                <Route
-                  path="create-tarif"
-                  element={<TarifAdd stations={stations} />}
-                />
-                <Route
-                  path="update-tarif/:id"
-                  element={<Tarifupdate stations={stations} />}
-                />
+              <Route
+                path="Tarif"
+                element={
+                  <Tariff stations={stations} setStations={setStations} />
+                }
+              />
+              <Route
+                path="create-tarif"
+                element={<TarifAdd stations={stations} />}
+              />
+              <Route
+                path="update-tarif/:id"
+                element={<Tarifupdate stations={stations} />}
+              />
 
-                <Route
-                  path="Employee"
-                  element={
-                    <Employee stations={stations} setStations={setStations} />
-                  }
-                />
-                <Route
-                  path="create-employee"
-                  element={<Eadd stations={stations} />}
-                />
-                <Route
-                  path="update-employee/:id"
-                  element={<Eupdate stations={stations} />}
-                />
+              <Route
+                path="Employee"
+                element={
+                  <Employee stations={stations} setStations={setStations} />
+                }
+              />
+              <Route
+                path="create-employee"
+                element={<Eadd stations={stations} />}
+              />
+              <Route
+                path="update-employee/:id"
+                element={<Eupdate stations={stations} />}
+              />
 
-                <Route path="TicketReport" element={<TicketReport />} />
-                <Route path="TotalReport" element={<TotalReport />} />
-              </Route>
+              <Route path="TicketReport" element={<TicketReport />} />
+              <Route path="TotalReport" element={<TotalReport />} />
+            </Route>
 
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<RegisterForm />} />
-              <Route path="forget-password" element={<ForgotPassword />} />
-              <Route path="reset-password" element={<ResetPassword />} />
-            </Routes>
-          </Router>
-        
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<RegisterForm />} />
+            <Route path="forget-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Router>
       </div>
     </div>
 

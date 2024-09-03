@@ -31,8 +31,8 @@ export default function Sidebar() {
         <span className="text-neutral-200 text-lg">Transport App</span>
       </div>
       <div className="py-8 flex flex-1 flex-col gap-0.5">
-        {DASHBOARD_SIDEBAR_LINKS.map((link) => (
-          <SidebarLink key={link.key} link={link} />
+        {DASHBOARD_SIDEBAR_LINKS.map((link, index) => (
+          <SidebarLink key={link.key} link={link} index={index} />
         ))}
       </div>
       <div className="flex flex-col gap-0.5 pt-2 border-t border-neutral-700">
@@ -52,20 +52,27 @@ export default function Sidebar() {
   );
 }
 
-function SidebarLink({ link }) {
+function SidebarLink({ link, index }) {
   const { pathname } = useLocation();
   return (
-    <Link
-      to={link.path}
-      className={classNames(
-        pathname.startsWith(link.path) 
-          ? "bg-neutral-700 text-white"
-          : "text-neutral-400",
-        linkClass
-      )}
-    >
-      <span className="text-xl">{link.icon}</span>
-      {link.label}
-    </Link>
+    <>
+      {
+          <Link
+          to={link.path}
+          className={classNames(
+            pathname === (link.path) 
+              ? "bg-neutral-700 text-white"
+              : "text-neutral-400",
+            linkClass
+          )}
+        >
+          <span className="text-xl">{link.icon}</span>
+          {link.label}
+        </Link>
+    
+      }
+    </>
+
+
   );
 }
