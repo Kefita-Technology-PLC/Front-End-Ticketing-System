@@ -1,10 +1,8 @@
 
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert } from "./ui/alert";
-import { ComPie, Comp } from "./ComPie";
+import { ComPie } from "./ComPie";
 import axios from "axios";
 import { apiEndpoint, headers } from "../data/AuthenticationData";
-import Skeleton from "react-loading-skeleton";
 import { CircularPie } from "./CircularPie";
 
 
@@ -13,17 +11,18 @@ export default function Dashboard() {
   const [generalReport, setGeneralReport] = useState([])
   const [loading, setLoading] = useState(false)
   const [countTypes, setCountTypes] = useState([])
+  const [user, setUser] = useState([])
 
   const fetchData = useCallback(
     async ()=>{
       setLoading(true)
+      // console.log('habesha')
       try{
         const generalReportData = await axios.get(`${apiEndpoint}/v1/general-report`, {headers})
-        const user = await
-        // console.log(generalReportData.data.data)
+        const userData = await axios.get(`${apiEndpoint}/user`, {headers})
         setGeneralReport(generalReportData.data.data)
         setCountTypes(generalReportData.data.data.carTypesCount)
-        // console.log(countTypes)
+        setUser(userData.data)
       }catch(err){
         console.error(err)
       }finally{
@@ -40,7 +39,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-4 p-8">
       <div className="flex flex-row gap-4 w-full"></div>
-        <h1 className="text-2xl p-4">Welcome to Dashboard</h1>
+        <h1 className="text-2xl p-4">Welcome ✋🏾, {user.name}</h1>
 
         <div >
           {

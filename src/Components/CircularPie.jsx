@@ -36,31 +36,28 @@ const chartConfig = {
 } 
 
 export function CircularPie({title, description, boxTitle, footer, generalReport, isStation}) {
-  const [generalReportInner, setGeneralReportInner] = useState(generalReport || [])
 
-  console.log(generalReportInner)
   let chartData, degree
-
   if(isStation){
+    // console.log('habesha')
      chartData = [
-      { browser: "safari", visitors: generalReportInner ? generalReportInner.stations : 20, fill: "var(--color-safari)" },
+      { browser: "safari", visitors: generalReport ? generalReport.stations : 20, fill: "var(--color-safari)" },
     ]
-     degree = Math.round((generalReportInner.stations * 360)/8000)
+     degree = Math.round((generalReport.stations * 360)/8000)
   }else {
      chartData = [
-      { browser: "safari", visitors: generalReportInner ? generalReportInner.associations_number : 20, fill: "var(--color-safari)" },
+      { browser: "safari", visitors: generalReport ? generalReport.associations_number : 20, fill: "var(--color-safari)" },
     ]
   
-     degree =  Math.round((generalReportInner.associations_number * 360)/8000)
+     degree =  Math.round((generalReport.associations_number * 360)/8000)
   }
 
-  console.log(degree)
   return (
 
     <Card className="flex flex-col">
 
       <CardHeader className="items-center pb-0">
-        <CardTitle className="">{title || <Skeleton width={'100px'} height={'100%'} />}</CardTitle>
+        <CardTitle className=" text-xl font-semibold ">{title || <Skeleton width={'100px'} height={'100%'} />}</CardTitle>
         <CardDescription>{description || 'January - June 2024'}</CardDescription>
       </CardHeader>
 

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 export const TicketReport = () => {
+
   const [ticketData, setTicketData] = useState({
     title: "",
     description: "",
     status: "open",
   });
+  
   const [latestTicket, setLatestTicket] = useState(null);
   const [error, setError] = useState("");
 

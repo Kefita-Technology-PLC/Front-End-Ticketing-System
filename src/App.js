@@ -14,7 +14,6 @@ import { Destination } from "./Components/Destination";
 import Tariff from "./Components/Tarif";
 import { Employee } from "./Components/Employee";
 import { Eadd } from "./Components/Eadd";
-import { TotalReport } from "./Components/TotalReport";
 import { TicketReport } from "./Components/TicketReport";
 import { TarifAdd } from "./Components/TarifAdd";
 import { Tarifupdate } from "./Components/Tarifupdate";
@@ -26,11 +25,21 @@ import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicl
 import {  useBlur } from "./contexts/BlurContext";
 import { apiEndpoint, headers } from "./data/AuthenticationData";
 import PageNotFound from "./pages/PageNotFound";
+import {PrimeReactProvider} from 'primereact/api'
+// import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "primereact/resources/primereact.min.css"
+import "primeicons/primeicons.css"
+import "primeflex/primeflex.css"
+// import 'primereact/resources/themes/bootstrap4-light-blue/theme.css'
+import 'primereact/resources/themes/tailwind-light/theme.css'
+
+
 
 
 // import { BlurProvider, useBlur } from "./contexts/BlurContext";
 
 function App() {
+
   const { isFormVisible, toggleFormVisibility } = useBlur();
   const [stations, setStations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -88,87 +97,88 @@ function App() {
     fetchVehicles();
   }, []);
 
+
   return (
-    <div className={`bg-cover bg-no-repeat `} style={{backgroundImage:  `url(${mainImage})`}} >
-      <div className=" font-roboto max-w-[1600px] mx-auto bg-[#ffffffcc] scroll-auto">
-        <Router>
-          <Routes>
-            
-            <Route path="/" element={
-              <PrivateRoute>
-                <Layout />
-              </PrivateRoute>
-              }>
-            
-              <Route index element={<Dashboard />} />
-              <Route
-                path="/Vehicle"
-                element={
-                  <Vehicle
-                  />
+
+    <PrimeReactProvider >
+      <div className={`bg-cover bg-no-repeat `} style={{backgroundImage:  `url(${mainImage})`}} >
+        <div className=" font-roboto max-w-[1600px] mx-auto bg-[#ffffffcc] scroll-auto">
+          <Router>
+            <Routes>
+              
+              <Route path="/" element={
+                <PrivateRoute>
+                  <Layout />
+                </PrivateRoute>
                 }>
-                  <Route index element={<ShowVehicle />}/>
-                  <Route path='add' element={<AddVehicle/>} />
-                  <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
+              
+                <Route index element={<Dashboard />} />
+
+                <Route path="/Vehicle" element={<Vehicle/>}>
+                    <Route index element={<ShowVehicle />}/>
+                    <Route path='add' element={<AddVehicle/>} />
+                    <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
+                </Route>
+
+
+                <Route
+                  path="Association"
+                  element={
+                    <Association
+                      stations={stations}
+                      setStations={setStations}
+                    />
+                    }
+                  >
+                  
+                  </Route>
+
+                <Route path="Destination" element={<Destination />} />
+
+                <Route
+                  path="Tarif"
+                  element={
+                    <Tariff stations={stations} setStations={setStations} />
+                  }
+                />
+                <Route
+                  path="create-tarif"
+                  element={<TarifAdd stations={stations} />}
+                />
+                <Route
+                  path="update-tarif/:id"
+                  element={<Tarifupdate stations={stations} />}
+                />
+
+                <Route
+                  path="Employee"
+                  element={
+                    <Employee stations={stations} setStations={setStations} />
+                  }
+                />
+                <Route
+                  path="create-employee"
+                  element={<Eadd stations={stations} />}
+                />
+                <Route
+                  path="update-employee/:id"
+                  element={<Eupdate stations={stations} />}
+                />
+
+                <Route path="TicketReport" element={<TicketReport />} />
               </Route>
 
-              <Route
-                path="Association"
-                element={
-                  <Association
-                    stations={stations}
-                    setStations={setStations}
-                  />
-                }
-              />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<RegisterForm />} />
+              <Route path="forget-password" element={<ForgotPassword />} />
+              <Route path="reset-password" element={<ResetPassword />} />
 
-              <Route path="Destination" element={<Destination />} />
-
-              <Route
-                path="Tarif"
-                element={
-                  <Tariff stations={stations} setStations={setStations} />
-                }
-              />
-              <Route
-                path="create-tarif"
-                element={<TarifAdd stations={stations} />}
-              />
-              <Route
-                path="update-tarif/:id"
-                element={<Tarifupdate stations={stations} />}
-              />
-
-              <Route
-                path="Employee"
-                element={
-                  <Employee stations={stations} setStations={setStations} />
-                }
-              />
-              <Route
-                path="create-employee"
-                element={<Eadd stations={stations} />}
-              />
-              <Route
-                path="update-employee/:id"
-                element={<Eupdate stations={stations} />}
-              />
-
-              <Route path="TicketReport" element={<TicketReport />} />
-              <Route path="TotalReport" element={<TotalReport />} />
-            </Route>
-
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<RegisterForm />} />
-            <Route path="forget-password" element={<ForgotPassword />} />
-            <Route path="reset-password" element={<ResetPassword />} />
-
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </Router>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Router>
+        </div>
       </div>
-    </div>
-
+    </PrimeReactProvider>
   );
 }
 

@@ -60,7 +60,9 @@ export function ComPie({title, description, boxTitle, countTypes, footer, loadin
 
   let chartDataInner = []
 
+
   React.useEffect(()=>{
+    // console.log('habesha')
     countTypes.forEach((countType, index) => {
       chartDataInner.push({
         browser: countType.type,
@@ -71,18 +73,17 @@ export function ComPie({title, description, boxTitle, countTypes, footer, loadin
     setChartData(chartDataInner)
   },[])
 
-  // console.log(chartData)
+  
 
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
   }, [chartDataInner])
 
-  console.log(totalVisitors)
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>{title || 'Pie Chart'}</CardTitle>
+        <CardTitle className="font-semibold text-xl">{title || 'Pie Chart'}</CardTitle>
         <CardDescription>{ description || 'January - June 2024'}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

@@ -5,6 +5,7 @@ import FormInputSelect from '../inputs/FormInputSelect';
 import { levels, codes, passengers } from '../data/VehicleData';
  import SuccessMessage from '../Components/shared/SuccessMessage'; // Import the SuccessMessage component
 import { apiEndpoint, headers } from '../data/AuthenticationData';
+import PrimeSelection from '../inputs/PrimeSelection';
 
 function AddVehicle() {
   const {stations, associations, carTypes, deploymentLines, handleRefresh} = useOutletContext()
@@ -15,12 +16,43 @@ function AddVehicle() {
   const navigate = useNavigate(); // Hook to navigate programmatically
 
   const handleChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+  
+    setFormData((prevData) => {
+      // Check if value is an object and handle accordingly
+      if (typeof value === 'object' && value !== null) {
+        // Handle specific fields separately
+        switch (name) {
+          case 'deployment_line_id':
+            return {
+              ...prevData,
+              deployment_line_id: value.id, // Assuming value.id contains the correct ID
+            };
+          case 'station_name':
+            return {
+              ...prevData,
+              station_name: value.name, // Assuming value.name contains the station name
+            };
+          case 'association_name':
+            return {
+              ...prevData,
+              association_name: value.name, // Assuming value.name contains the association name
+            };
+          default:
+            return {
+              ...prevData,
+              ...value, // Spread other object attributes if they match formData structure
+            };
+        }
+      }
+  
+      // If value is not an object, handle as usual
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
   };
-
 
   const [formData, setFormData] = useState({
     plate_number: '',
@@ -32,6 +64,8 @@ function AddVehicle() {
     association_name: '',
     deployment_line_id: '',
   });
+
+  // console.log(formData)
 
 
   const handleSubmit = async (e) => {
@@ -56,13 +90,25 @@ function AddVehicle() {
       }
     }
   };
+  // console.log(stations)
 
   return (
     <form onSubmit={handleSubmit} className="p-3 rounded-md">
+
       <h2>Add Vehicles</h2>
       <div className="flex m-7 justify-around gap-7">
         <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
-          <FormInputSelect
+
+          <PrimeSelection 
+            data={stations} 
+            handle={handleChange} 
+            startValue={'Select a Station'}
+            label={'Choose a Station'}
+            name={'station_name'} 
+            error={errors.station_name}
+          />
+
+          {/* <FormInputSelect
             name="station_name"
             value={formData.station_name}
             handle={handleChange}
@@ -71,9 +117,9 @@ function AddVehicle() {
             label="Choose a Station"
             startValue="Select a station"
             isName={true}
-          />
+          /> */}
 
-          <FormInputSelect
+          {/* <FormInputSelect
             name="association_name"
             value={formData.association_name}
             handle={handleChange}
@@ -82,7 +128,18 @@ function AddVehicle() {
             label="Association name"
             startValue="Select an association"
             isName={true}
+          /> */}
+
+          <PrimeSelection 
+            data={associations} 
+            handle={handleChange} 
+            startValue={'Select an Association'}
+            label={'Choose an Association'}
+            name={'association_name'} 
+            error={errors.association_name}
           />
+
+          
 
           <hr />
 
@@ -110,6 +167,10 @@ function AddVehicle() {
             isName={true}
           />
 
+          
+
+          
+
           <FormInputSelect
             name="level"
             value={formData.level}
@@ -121,6 +182,15 @@ function AddVehicle() {
             isName={true}
             isUnderscore={true}
           />
+
+          {/* <PrimeSelection 
+            data={levels} 
+            handle={handleChange} 
+            startValue={'Select a Level'}
+            label={'Choose a Level'}
+            name={'level'} 
+            error={errors.level}
+          /> */}
         </div>
 
         <div className="flex flex-col gap-2 w-full">
@@ -136,6 +206,7 @@ function AddVehicle() {
             isUnderscore={false}
             optionalWord="People"
           />
+
 
           <label htmlFor="car-type-select">Choose a car type:</label>
           <select
