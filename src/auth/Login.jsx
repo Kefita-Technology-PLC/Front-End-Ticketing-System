@@ -7,6 +7,9 @@ import Logo from './components/Logo';
 import FormButton from './components/FormButton';
 import { Link, useNavigate } from 'react-router-dom';
 import usePasswordToggle from '../custom-hooks/usePasswordToggle';
+import { apiEndpoint } from '../data/AuthenticationData';
+import { set } from 'react-hook-form';
+
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -14,6 +17,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [errors, setErrors] = useState({})
   const [passwordInputType, ToggleIcon] = usePasswordToggle()
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -27,8 +31,9 @@ const Login = () => {
   }, []);
 
   const login = async (phoneNumber, password) => {
+    setLoading(true)
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+      const response = await axios.post(`${apiEndpoint}/login`, {
         phone_no: phoneNumber, 
         password: password
       });
@@ -36,6 +41,7 @@ const Login = () => {
 
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setLoading(false)
       if (rememberMe) {
         localStorage.setItem('phoneNumber', phoneNumber);
         localStorage.setItem('password', password);
@@ -46,7 +52,7 @@ const Login = () => {
 
       navigate('/')
     } catch (error) {
-      
+      setLoading(false)
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
         console.log(error.response.data.errors)
@@ -120,7 +126,7 @@ const Login = () => {
                           </div>
                           <Link to={'/forget-password'} className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</Link>
                       </div>
-                      <FormButton text={'sign in'}/>
+                      <FormButton loading={loading} text={'sign in'}/>
                       <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                           Don’t have an account yet? <Link to={'/register'} className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</Link>
                       </p>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import InputFeild from './Input';
 import FormButton from './FormButton';
 import Logo from './Logo';
+import { apiEndpoint, headers } from '../../data/AuthenticationData';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const ForgotPassword = () => {
     setLoading(true); // Set loading to true when starting to submit
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/forgot-password`, {
+      const response = await axios.post(`${apiEndpoint}/forgot-password`, {
         email,
       });
 
