@@ -16,7 +16,7 @@ function TopHeaders({topTitle, navLinks, navigation}) {
         <div className='flex gap-x-2'>
           {
             pathname === '/Vehicle/add' ? '' : (
-              <Link to={'/Vehicle/add'} className=' text-xs p-2 outline outline-1 rounded-md gap-x-1 flex items-center bg-blue-500 text-white'><FontAwesomeIcon icon={faPlus} /> Add Vehicles</Link>
+              <Link to={'/Vehicle/add'} className=' text-xs p-2 outline outline-1 rounded-md gap-x-1 flex items-center bg-blue-500 text-white'><FontAwesomeIcon icon={faPlus} /> <span className='md:block hidden'>Add Vehicles</span> </Link>
             )
           }
 
@@ -45,7 +45,7 @@ function TopHeaders({topTitle, navLinks, navigation}) {
                 className={isActive ? 'border-b-[2px] border-blue-500' : ''}
                 key={navigationItem.id}
               >
-                {navigationItem.name}
+                <span className=''>{navigationItem.name}</span> 
               </Link>
             );
           })}

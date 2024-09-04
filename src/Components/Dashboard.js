@@ -16,13 +16,14 @@ export default function Dashboard() {
   const fetchData = useCallback(
     async ()=>{
       setLoading(true)
-      // console.log('habesha')
+      console.log('habesha')
       try{
         const generalReportData = await axios.get(`${apiEndpoint}/v1/general-report`, {headers})
         const userData = await axios.get(`${apiEndpoint}/user`, {headers})
         setGeneralReport(generalReportData.data.data)
         setCountTypes(generalReportData.data.data.carTypesCount)
         setUser(userData.data)
+        console.log(generalReport)
       }catch(err){
         console.error(err)
       }finally{
@@ -31,15 +32,16 @@ export default function Dashboard() {
     }
   )
 
+  
   useEffect( ()=>{
     fetchData()
+    // console.log(generalReport)
   },[])
 
 
   return (
-    <div className="flex flex-col gap-4 p-8">
-      <div className="flex flex-row gap-4 w-full"></div>
-        <h1 className="text-2xl p-4">Welcome ✋🏾, {user.name}</h1>
+    <section className="mx-auto p-4">
+        <h1 className="text-2xl p-4 font-ubuntu">Welcome ✋🏾, <span className="text-xl">{user.name}</span></h1>
 
         <div >
           {
@@ -49,7 +51,7 @@ export default function Dashboard() {
             
             ) :
             (
-              <div className="grid grid-cols-3 gap-x-2">
+            <div className="grid md:grid-cols-3 p-2 gap-y-2 gap-x-2 grid-cols-1 sm:grid-cols-2">
 
                 <ComPie 
                   title={'Total Registered Vehicles'}
@@ -58,6 +60,7 @@ export default function Dashboard() {
                   countTypes= {countTypes}
                   footer={'Total registered vehicles in the system.'}
                 />
+
                 <CircularPie
                   title ={'Total Registered Stations'}
                   description={'Total registerd Stations'}
@@ -73,7 +76,34 @@ export default function Dashboard() {
                   boxTitle={'Associations'}
                   footer={'Total registered associations in the system'}
                   generalReport={generalReport}
-                  isStation={false}
+                  isAssosiation={true}
+                />
+
+                <CircularPie 
+                  title={'Total Registerd Deployment Lines'}
+                  description={'Total registerd deployment lines.'}
+                  boxTitle={'Deployment Lines'}
+                  footer={'Total registered deployment lines in the system.'}
+                  generalReport={generalReport}
+                  isDeployement={true}
+                />
+
+                <CircularPie 
+                  title={'Total Admins Number'}
+                  description={'Total registered admins.'}
+                  boxTitle={'Admins'}
+                  footer={'Total registered admins  in the system.'}
+                  generalReport={generalReport}
+                  isAdmins={true}
+                />
+
+                <CircularPie 
+                  title={'Total Ticket Sellers'}
+                  description={'Total registerd ticket sellers.'}
+                  boxTitle={'Tikect sellers'}
+                  footer={'Total registered ticket sellers in the system.'}
+                  generalReport={generalReport}
+                  isTicketSellers={true}
                 />
               </div>
             )
@@ -81,9 +111,6 @@ export default function Dashboard() {
           }
         </div>
         
-
-
-      <div className="flex flex-row gap-4 w-full"></div>
-    </div>
+    </section>
   );
 }

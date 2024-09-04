@@ -45,8 +45,8 @@ export default function TableShow({ caption, tableHeads }) {
   }
 
   return (
-    <>
-      <table className="table-auto w-full border-collapse">
+    <div className="overflow-x-auto">
+      <table className="table-auto min-w-[1000px] border-collapse ">
         <caption>{''}</caption>
         <thead className="bg-gray-100">
           <tr>
@@ -103,6 +103,6 @@ export default function TableShow({ caption, tableHeads }) {
           Next <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
-    </>
+    </div>
   )
 }

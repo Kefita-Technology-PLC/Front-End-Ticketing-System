@@ -12,12 +12,20 @@ function AddVehicle() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false); // Loading state
   const [showSuccess, setShowSuccess] = useState(false); // Success message state
-
+  const [formData, setFormData] = useState({
+    plate_number: '',
+    code: '',
+    level: '',
+    number_of_passengers: '',
+    car_type: '',
+    station_name: '',
+    association_name: '',
+    deployment_line_id: '',
+  });
   const navigate = useNavigate(); // Hook to navigate programmatically
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
     setFormData((prevData) => {
       // Check if value is an object and handle accordingly
       if (typeof value === 'object' && value !== null) {
@@ -54,16 +62,7 @@ function AddVehicle() {
     });
   };
 
-  const [formData, setFormData] = useState({
-    plate_number: '',
-    code: '',
-    level: '',
-    number_of_passengers: '',
-    car_type: '',
-    station_name: '',
-    association_name: '',
-    deployment_line_id: '',
-  });
+
 
   // console.log(formData)
 
@@ -93,11 +92,11 @@ function AddVehicle() {
   // console.log(stations)
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 rounded-md">
+    <form onSubmit={handleSubmit} className="md:p-3 p-2 rounded-md">
 
-      <h2>Add Vehicles</h2>
-      <div className="flex m-7 justify-around gap-7">
-        <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
+      <h2 className='text-xl font-semibold'>Add Vehicles</h2>
+      <div className="flex md:m-7 flex-col md:flex-row justify-around gap-7 p-2">
+        <div className="flex flex-col gap-2 w-full md:border-r-[2px] md:pr-5">
 
           <PrimeSelection 
             data={stations} 
@@ -107,28 +106,6 @@ function AddVehicle() {
             name={'station_name'} 
             error={errors.station_name}
           />
-
-          {/* <FormInputSelect
-            name="station_name"
-            value={formData.station_name}
-            handle={handleChange}
-            error={errors.station_name}
-            optionValue={stations}
-            label="Choose a Station"
-            startValue="Select a station"
-            isName={true}
-          /> */}
-
-          {/* <FormInputSelect
-            name="association_name"
-            value={formData.association_name}
-            handle={handleChange}
-            error={errors.association_name}
-            optionValue={associations}
-            label="Association name"
-            startValue="Select an association"
-            isName={true}
-          /> */}
 
           <PrimeSelection 
             data={associations} 

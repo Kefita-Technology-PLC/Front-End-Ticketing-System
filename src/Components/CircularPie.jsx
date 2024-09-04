@@ -18,12 +18,8 @@ import {
   CardTitle,
 } from './ui/card'
 import { ChartConfig, ChartContainer } from "./ui/chart"
-import Skeleton from "react-loading-skeleton"
-import { useMemo, useState } from "react"
 
 export const description = "A radial chart with a custom shape"
-
-
 
 const chartConfig = {
   visitors: {
@@ -35,30 +31,40 @@ const chartConfig = {
   },
 } 
 
-export function CircularPie({title, description, boxTitle, footer, generalReport, isStation}) {
+export function CircularPie({
+  title = 'Visitors', 
+  description = 'January - June 2024', 
+  boxTitle = 'Visitors', 
+  footer = 'Showing total visitors for the last 6 months', 
+  generalReport = {},
+  isStation = false, 
+  isAssosiation = false, 
+  isDeployement = false,
+  isTicketSellers = false,
+  isAdmins = false
+}) {
 
-  let chartData, degree
-  if(isStation){
-    // console.log('habesha')
-     chartData = [
-      { browser: "safari", visitors: generalReport ? generalReport.stations : 20, fill: "var(--color-safari)" },
-    ]
-     degree = Math.round((generalReport.stations * 360)/8000)
-  }else {
-     chartData = [
-      { browser: "safari", visitors: generalReport ? generalReport.associations_number : 20, fill: "var(--color-safari)" },
-    ]
-  
-     degree =  Math.round((generalReport.associations_number * 360)/8000)
-  }
+  const chartTypeMapping = [
+    { condition: isStation, key: 'stations' },
+    { condition: isAssosiation, key: 'associations_number' },
+    { condition: isDeployement, key: 'deployment_lines' },
+    { condition: isTicketSellers, key: 'ticket_sellers' },
+    { condition: isAdmins, key: 'admins' }
+  ];
+
+  const { key } = chartTypeMapping.find(({ condition }) => condition) || {};
+  const visitors = generalReport[key] || 20;
+  const degree = Math.round((visitors * 360) / 8000);
+
+  const chartData = [
+    { browser: "safari", visitors, fill: "var(--color-safari)" },
+  ];
 
   return (
-
     <Card className="flex flex-col">
-
       <CardHeader className="items-center pb-0">
-        <CardTitle className=" text-xl font-semibold ">{title || <Skeleton width={'100px'} height={'100%'} />}</CardTitle>
-        <CardDescription>{description || 'January - June 2024'}</CardDescription>
+        <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
 
       <CardContent className="flex-1 pb-0">
@@ -96,17 +102,17 @@ export function CircularPie({title, description, boxTitle, footer, generalReport
                           y={viewBox.cy}
                           className="fill-foreground text-4xl font-bold"
                         >
-                          {chartData[0].visitors}
+                          {visitors}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          {boxTitle || 'Visitors'}
+                          {boxTitle}
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -116,7 +122,7 @@ export function CircularPie({title, description, boxTitle, footer, generalReport
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          {footer || 'Showing total visitors for the last 6 months'}
+          {footer}
         </div>
       </CardFooter>
     </Card>

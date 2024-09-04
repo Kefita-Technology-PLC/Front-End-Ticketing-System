@@ -76,6 +76,7 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         roboto: ["Roboto", "sans-serif"],
+        ubuntu: ["Ubuntu", "sans-serif"]
       },
       keyframes: {
         "accordion-down": {

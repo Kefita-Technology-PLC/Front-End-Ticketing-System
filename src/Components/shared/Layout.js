@@ -1,22 +1,22 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+
 
 export const Layout = () => {
   return (
-    <div className="flex flex-row h-screen bg-custom-blue">
+    <>
       {/* Sidebar */}
-      <div className="w-64 h-full fixed top-0 left-0">
+      <div className="md:w-64 h-full fixed md:top-0 md:left-0 z-[200]">
         <Sidebar />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-64 overflow-y-auto">
-        <div className="p-4">
-          <Outlet />
+      
+        <div className="md:ml-64">
+          <Outlet  />
         </div>
-      </div>
-    </div>
+      
+    </>
   );
 };

@@ -81,7 +81,7 @@ export function ComPie({title, description, boxTitle, countTypes, footer, loadin
 
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col  ">
       <CardHeader className="items-center pb-0">
         <CardTitle className="font-semibold text-xl">{title || 'Pie Chart'}</CardTitle>
         <CardDescription>{ description || 'January - June 2024'}</CardDescription>
