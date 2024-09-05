@@ -32,6 +32,7 @@ import "primeicons/primeicons.css"
 import "primeflex/primeflex.css"
 // import 'primereact/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primereact/resources/themes/tailwind-light/theme.css'
+import { TotalReport } from "./Components/TotalReport";
 
 
 
@@ -166,6 +167,7 @@ function App() {
                 />
 
                 <Route path="TicketReport" element={<TicketReport />} />
+                <Route path="TotalReport" element={<TotalReport/>} />
               </Route>
 
               <Route path="login" element={<Login />} />

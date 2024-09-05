@@ -21,7 +21,7 @@ export const passengers = [
   { id: 6, name: '70' },
 ]
 
-export const navigation = [{
+export const vehicleNavigation = [{
   id: 1,
   name: 'Vehicles',
   path: '',
@@ -37,6 +37,14 @@ export const navigation = [{
   fakePath: 'change',
   path: 'change',
 }]
+
+export const totalReportNavigation =[
+  {
+    id:1,
+    name: 'Reports',
+    path: 'report'
+  }
+]
 
 
 

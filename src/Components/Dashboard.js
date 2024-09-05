@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
+import {useTranslation} from 'react-i18next'
 import { ComPie } from "./ComPie";
 import axios from "axios";
 import { apiEndpoint, headers } from "../data/AuthenticationData";
@@ -7,7 +8,7 @@ import { CircularPie } from "./CircularPie";
 
 
 export default function Dashboard() {
-
+  const {t}= useTranslation()
   const [generalReport, setGeneralReport] = useState([])
   const [loading, setLoading] = useState(false)
   const [countTypes, setCountTypes] = useState([])
@@ -38,10 +39,25 @@ export default function Dashboard() {
     // console.log(generalReport)
   },[])
 
+  const languages = [
+    {code: 'en', lang: "English"},
+    {code: "amh", lang: "Amharic"},
+    {code: "oro", lang: "Oromifa"},
+  ]
+
+  const {i18n} = useTranslation()
 
   return (
     <section className="mx-auto p-4">
         <h1 className="text-2xl p-4 font-ubuntu">Welcome ✋🏾, <span className="text-xl">{user.name}</span></h1>
+
+        {
+          languages.map((lng)=>(
+            <button key={lng.code} onClick={()=>{
+              i18n.changeLanguage(lng.code)
+            }}>{lng.lang}</button>
+          ))
+        }
 
         <div >
           {

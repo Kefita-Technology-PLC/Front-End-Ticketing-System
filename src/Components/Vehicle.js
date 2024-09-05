@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import TopHeaders from "../headers/TopHeaders";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
-import { navigation } from "../data/VehicleData";
+import { vehicleNavigation } from "../data/VehicleData";
 import { headers as defaultHeaders, apiEndpoint } from "../data/AuthenticationData";
 
 const Vehicle = () => {
@@ -89,7 +89,7 @@ const Vehicle = () => {
   return (
     <div className="p-2 pt-6 md:pt-2 ">
       <div className="relative">
-        <TopHeaders topTitle={"Vehicles"} navigation={navigation} />
+        <TopHeaders topTitle={"Vehicles"} navigation={vehicleNavigation} />
       </div>
 
       <Outlet

@@ -1,107 +1,62 @@
-import React, { useState, useEffect } from "react";
+import HeaderNavigation from "../total-report-subcomponents/HeaderNavigation";
+import { apiEndpoint } from "../data/AuthenticationData";
+import React, { useState, useEffect, useMemo } from "react";
 import DataTable from "react-data-table-component";
+import { totalReportNavigation } from "../data/VehicleData";
+import { Outlet } from "react-router-dom";
+import axios from "axios";
 
 export const TotalReport = () => {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [generalReport, setGeneralReport] = useState([])
+  const [monthlyReport, setMonthlyReport] = useState([])
+  const [yearlyReport, setYearlyReport] = useState([])
+  const [weeklyReport, setWeeklyReport] = useState([])
 
-  const columns = [
-    {
-      name: "Station ID",
-      selector: (row) => row.station_id,
-      sortable: true,
-    },
-    {
-      name: "Station Name",
-      selector: (row) => row.station_name,
-      sortable: true,
-    },
-    {
-      name: "Association Name",
-      selector: (row) => row.association_name,
-      sortable: true,
-    },
-    {
-      name: "Number of Employees",
-      selector: (row) => row.number_of_employees,
-      sortable: true,
-    },
-    {
-      name: "Number of Vehicles",
-      selector: (row) => row.number_of_vehicles,
-      sortable: true,
-    },
-  ];
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Fetch data from the provided API endpoints
-        const [
-          stationsResponse,
-          associationsResponse,
-          vehiclesResponse,
-          employeesResponse,
-        ] = await Promise.all([
-          fetch("http://localhost:3000/stations"),
-          fetch("http://localhost:3000/associations"),
-          fetch("http://localhost:3000/vehicles"),
-          fetch("http://localhost:3000/employees"),
-        ]);
-
-        const stations = await stationsResponse.json();
-        const associations = await associationsResponse.json();
-        const vehicles = await vehiclesResponse.json();
-        const employees = await employeesResponse.json();
-
-        // Process data to match the required format
-        const processedData = stations
-          .map((station) => {
-            const stationAssociations = associations.filter(
-              (association) => association.station_id === station.id
-            );
-
-            return stationAssociations.map((association) => {
-              const vehiclesForAssociation = vehicles.filter(
-                (vehicle) =>
-                  vehicle.station_id === station.id &&
-                  vehicle.association_id === association.id
-              );
-
-              const employeesForStation = employees.filter(
-                (employee) => employee.station_id === station.id
-              );
-
-              return {
-                station_id: station.id,
-                station_name: station.name,
-                association_name: association.name,
-                number_of_employees: employeesForStation.length,
-                number_of_vehicles: vehiclesForAssociation.length,
-              };
-            });
-          })
-          .flat();
-
-        setData(processedData);
-      } catch (error) {
-        console.error("Error fetching the data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+  const headers = useMemo(() => {
+    const token = localStorage.getItem("token");
+    return {  Authorization: `Bearer ${token}` };
   }, []);
+
+  const fetchData = async ()=>{
+    setLoading(true)
+    try{
+      const [reportData, monthlyData, weeklyData, yearlyData] = await Promise.all([
+        axios.get(`${apiEndpoint}/v1/general-report`, {headers}),
+        axios.get(`${apiEndpoint}/v1/monthly-report`, {headers}),
+        axios.get(`${apiEndpoint}/v1/weekly-report`, {headers}),
+        axios.get(`${apiEndpoint}/v1/yearly-report`, {headers}),
+      ])
+      setGeneralReport(reportData.data.data)
+      setWeeklyReport(weeklyData.data.data)
+      setMonthlyReport(monthlyData.data.data)
+      setYearlyReport((yearlyData.data.data))
+
+      console.log(reportData.data.data)
+      console.log(weeklyData.data.data)
+      console.log(monthlyData.data.data)
+      console.log(yearlyData.data.data)
+    }catch(error){
+      console.error('Error fetching general report data:', error)
+    }finally{
+      setLoading(false)
+    }
+  }
+
+  useEffect(()=>{
+    fetchData()
+  },[])
+
+
 
   return (
     <div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <DataTable columns={columns} data={data} />
-      )}
+      <div className="relative">
+        <HeaderNavigation navigation={totalReportNavigation} topTitle={"Reports"}  />
+      </div>
+
+      <Outlet />
     </div>
   );
 };
