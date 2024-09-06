@@ -5,6 +5,7 @@ import { ComPie } from "./ComPie";
 import axios from "axios";
 import { apiEndpoint, headers } from "../data/AuthenticationData";
 import { CircularPie } from "./CircularPie";
+import { Dropdown } from "primereact/dropdown";
 
 
 export default function Dashboard() {
@@ -40,22 +41,43 @@ export default function Dashboard() {
   },[])
 
   const languages = [
-    {code: 'en', lang: "English"},
-    {code: "amh", lang: "Amharic"},
-    {code: "oro", lang: "Oromifa"},
+    {code: 'en', name: "English", id:1},
+    {code: "amh", name: "Amharic", id:2},
+    {code: "oro", name: "Oromifa", id:3},
   ]
 
   const {i18n} = useTranslation()
+  
+  const changeLanguage = (code)=>{
+    i18n.changeLanguage(code)
+  }
+
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  const cities = [
+    { name: 'New York', code: 'NY', id:1 },
+    { name: 'Rome', code: 'RM', id:2 },
+    { name: 'London', code: 'LDN', id:3 },
+    { name: 'Istanbul', code: 'IST', id:4 },
+    { name: 'Paris', code: 'PRS', id:5 }
+];
+
 
   return (
     <section className="mx-auto p-4">
-        <h1 className="text-2xl p-4 font-ubuntu">Welcome ✋🏾, <span className="text-xl">{user.name}</span></h1>
+        <h1 className="text-2xl p-4 font-ubuntu">{t("greeting")} ✋🏾, <span className="text-xl">{user.name}</span></h1>
+
+        <div className="card flex justify-content-center">
+          <Dropdown value={selectedCity} onChange={(e) => {
+            setSelectedCity(e.value)}} options={cities} optionLabel="name" 
+          placeholder="Select a City" className="w-full md:w-14rem"  />
+        </div>
 
         {
           languages.map((lng)=>(
-            <button key={lng.code} onClick={()=>{
-              i18n.changeLanguage(lng.code)
-            }}>{lng.lang}</button>
+            <button key={lng.code} onClick={()=>
+              changeLanguage(lng.code)
+            }>{lng.lang}</button>
           ))
         }
 

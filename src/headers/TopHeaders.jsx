@@ -1,6 +1,7 @@
 
 import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Dropdown } from 'primereact/dropdown'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom/dist'
 
@@ -14,10 +15,13 @@ function TopHeaders({topTitle, navLinks, navigation}) {
       <div className='flex justify-between items-center p-2'>
         <h1 className='px-4 text-[23px] font-semibold'>{topTitle}</h1>
         <div className='flex gap-x-2'>
+          <Dropdown val />
           {
+
             pathname === '/Vehicle/add' ? '' : (
               <Link to={'/Vehicle/add'} className=' text-xs p-2 outline outline-1 rounded-md gap-x-1 flex items-center bg-blue-500 text-white'><FontAwesomeIcon icon={faPlus} /> <span className='md:block hidden'>Add Vehicles</span> </Link>
             )
+
           }
 
           {
