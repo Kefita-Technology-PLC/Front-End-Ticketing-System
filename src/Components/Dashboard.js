@@ -68,9 +68,9 @@ export default function Dashboard() {
         <h1 className="text-2xl p-4 font-ubuntu">{t("greeting")} ✋🏾, <span className="text-xl">{user.name}</span></h1>
 
         <div className="card flex justify-content-center">
-          <Dropdown value={selectedCity} onChange={(e) => {
+          {/* <Dropdown value={selectedCity} onChange={(e) => {
             setSelectedCity(e.value)}} options={cities} optionLabel="name" 
-          placeholder="Select a City" className="w-full md:w-14rem"  />
+          placeholder="Select a City" className="w-full md:w-14rem"  /> */}
         </div>
 
         {
