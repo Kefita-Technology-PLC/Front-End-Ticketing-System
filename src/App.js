@@ -34,6 +34,7 @@ import "primeflex/primeflex.css"
 import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
 import ShowAssociations from "./association-components/ShowAssociations";
+import AddAssociation from "./association-components/AddAssociation";
 
 
 
@@ -42,7 +43,6 @@ import ShowAssociations from "./association-components/ShowAssociations";
 
 function App() {
 
-  const { isFormVisible, toggleFormVisibility } = useBlur();
   const [stations, setStations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const fetchData=async ()=>{
@@ -124,6 +124,7 @@ function App() {
 
                 <Route path="Association" element={<Association />}>
                   <Route index  element={<ShowAssociations />}/>
+                  <Route path="add" element={<AddAssociation/>} />
                   
                 </Route>
 

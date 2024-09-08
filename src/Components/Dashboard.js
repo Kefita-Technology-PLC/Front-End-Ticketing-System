@@ -5,11 +5,11 @@ import { ComPie } from "./ComPie";
 import axios from "axios";
 import { apiEndpoint, headers } from "../data/AuthenticationData";
 import { CircularPie } from "./CircularPie";
-import { Dropdown } from "primereact/dropdown";
+import LanguageSelector from "./shared/LanguageSelector";
 
 
 export default function Dashboard() {
-  const {t, i18n}= useTranslation()
+  const {t}= useTranslation()
   const [generalReport, setGeneralReport] = useState([])
   const [loading, setLoading] = useState(false)
   const [countTypes, setCountTypes] = useState([])
@@ -46,37 +46,16 @@ export default function Dashboard() {
   ]
 
 
-  
-  const changeLanguage = (code)=>{
-    i18n.changeLanguage(code)
-  }
-
-
   return (
     <section className="mx-auto p-4">
 
       <div className=" flex  justify-between items-center">
         <div>
           <h1 className="text-2xl p-4 font-ubuntu">{t("greeting")} ✋🏾, <span className="text-xl">{user.name}</span></h1>
-          
+
         </div>
-
-        <select className="h-5 " name="" id="" onChange={(e) => {
-          changeLanguage(e.target.value)
-        }}>
-          <option value="en">English</option>
-          <option value="amh">Amharic</option>
-          <option value="oro">Oromifa</option>
-        </select>
+        <LanguageSelector/>
       </div>
-
-        {
-          languages.map((lng)=>(
-            <button key={lng.code} onClick={()=>
-              changeLanguage(lng.code)
-            }>{lng.lang}</button>
-          ))
-        }
 
         <div >
           {
