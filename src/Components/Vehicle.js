@@ -89,7 +89,14 @@ const Vehicle = () => {
   return (
     <div className="p-2 pt-6 md:pt-2 ">
       <div className="relative">
-        <TopHeaders topTitle={"Vehicles"} navigation={vehicleNavigation} />
+        <TopHeaders 
+          topTitle={"Vehicles"} 
+          navigation={vehicleNavigation} 
+          mainUrl={'Vehicle'}
+          firstButton={'Add Vehicle'}
+          seccondButton={'Delete or Update'}
+        />
+
       </div>
 
       <Outlet

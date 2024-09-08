@@ -33,6 +33,7 @@ import "primeflex/primeflex.css"
 // import 'primereact/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
+import ShowAssociations from "./association-components/ShowAssociations";
 
 
 
@@ -47,7 +48,6 @@ function App() {
   const fetchData=async ()=>{
     try{
       const vehiclesData = await axios.get(`${apiEndpoint}/v1/vehicles`, {headers})
- 
       setVehicles(vehiclesData.data.data || [])
       // console.log(vehiclesData.data.data)
     } catch (error){
@@ -67,7 +67,7 @@ function App() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${apiEndpoint}/v1/stations`, {headers}
+        `${apiEndpoint}/v1/stations-all`, {headers}
       );
       setStations(response.data);
       setError(null);
@@ -122,17 +122,10 @@ function App() {
                 </Route>
 
 
-                <Route
-                  path="Association"
-                  element={
-                    <Association
-                      stations={stations}
-                      setStations={setStations}
-                    />
-                    }
-                  >
+                <Route path="Association" element={<Association />}>
+                  <Route index  element={<ShowAssociations />}/>
                   
-                  </Route>
+                </Route>
 
                 <Route path="Destination" element={<Destination />} />
 

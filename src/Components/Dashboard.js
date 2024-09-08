@@ -9,7 +9,7 @@ import { Dropdown } from "primereact/dropdown";
 
 
 export default function Dashboard() {
-  const {t}= useTranslation()
+  const {t, i18n}= useTranslation()
   const [generalReport, setGeneralReport] = useState([])
   const [loading, setLoading] = useState(false)
   const [countTypes, setCountTypes] = useState([])
@@ -37,7 +37,6 @@ export default function Dashboard() {
   
   useEffect( ()=>{
     fetchData()
-    // console.log(generalReport)
   },[])
 
   const languages = [
@@ -46,32 +45,30 @@ export default function Dashboard() {
     {code: "oro", name: "Oromifa", id:3},
   ]
 
-  const {i18n} = useTranslation()
+
   
   const changeLanguage = (code)=>{
     i18n.changeLanguage(code)
   }
 
-  const [selectedCity, setSelectedCity] = useState(null);
-
-  const cities = [
-    { name: 'New York', code: 'NY', id:1 },
-    { name: 'Rome', code: 'RM', id:2 },
-    { name: 'London', code: 'LDN', id:3 },
-    { name: 'Istanbul', code: 'IST', id:4 },
-    { name: 'Paris', code: 'PRS', id:5 }
-];
-
 
   return (
     <section className="mx-auto p-4">
-        <h1 className="text-2xl p-4 font-ubuntu">{t("greeting")} ✋🏾, <span className="text-xl">{user.name}</span></h1>
 
-        <div className="card flex justify-content-center">
-          {/* <Dropdown value={selectedCity} onChange={(e) => {
-            setSelectedCity(e.value)}} options={cities} optionLabel="name" 
-          placeholder="Select a City" className="w-full md:w-14rem"  /> */}
+      <div className=" flex  justify-between items-center">
+        <div>
+          <h1 className="text-2xl p-4 font-ubuntu">{t("greeting")} ✋🏾, <span className="text-xl">{user.name}</span></h1>
+          
         </div>
+
+        <select className="h-5 " name="" id="" onChange={(e) => {
+          changeLanguage(e.target.value)
+        }}>
+          <option value="en">English</option>
+          <option value="amh">Amharic</option>
+          <option value="oro">Oromifa</option>
+        </select>
+      </div>
 
         {
           languages.map((lng)=>(
