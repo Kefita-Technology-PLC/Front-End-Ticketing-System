@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../Components/ui/popove
 import { CalendarIcon } from 'lucide-react'
 
 function AddAssociation() {
+
   const {stations} = useOutletContext()
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
@@ -26,16 +27,15 @@ function AddAssociation() {
 
   const handleChange = (e) => {
     setFormData((prevData) => {
-
       const {name, value} = e.target
-
       return {
         ...prevData,
         [name] : value
       }
     });
   }
-  console.log(formData)
+
+  // console.log(formData)
 
   return (
     <form onSubmit={handleSubmit} className='p-5 bg-white outline-1 outline-gray-900 rounded-xl max-w-[500px] mx-auto'>
@@ -56,7 +56,7 @@ function AddAssociation() {
               isEthiopianOrGregorian ? (
                 <div className="flex flex-column gap-2">
                   <label htmlFor="establishment_date">Establishment Date</label>
-                  <InputMask id="establishment_date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className=' text-xs ' mask='12-03-1995' />
+                  <InputMask id="establishment_date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className=' text-xs ' mask='99/99/9999' />
     
                   <small id="username-help">
                       Enter the establishment Date.

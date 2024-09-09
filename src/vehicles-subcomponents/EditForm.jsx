@@ -13,6 +13,7 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
   let [color] = useState("#ffffff")
   const { isFormVisible } = useBlur();
   const {loadingEdit, stations, associations, numPassengers, carTypes, deploymentLines } = useOutletContext()
+  
   const formRef = useRef(null)
   console.log(errors)
   // const [errors, setErrors] = useState({});
@@ -27,15 +28,16 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
   return (
     <div className={`p-3 rounded-md fixed top-[30px] shadow-lg bg-white z-[100] left-1/2 transform -translate-x-1/2 blur-0 ${isFormVisible? '': 'hidden '}`}>
 
-        {loadingEdit &&       
+        { loadingEdit &&       
         <ClipLoader
-        color={color}
-        loading={loadingEdit}
-        cssOverride={override}
-        size={150}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />}
+          color={color}
+          loading={loadingEdit}
+          cssOverride={override}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+        }
 
         {!loadingEdit && 
         <form onSubmit={handleSubmit}   ref={formRef} id='edit-form'>

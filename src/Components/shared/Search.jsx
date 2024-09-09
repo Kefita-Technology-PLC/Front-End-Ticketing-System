@@ -11,6 +11,7 @@ import { headers, apiEndpoint } from "../../data/AuthenticationData";
 import { levels, codes } from '../../data/VehicleData';
 import { Toast } from 'primereact/toast';
 
+
 function Search({ vehiclesData }) {
   const {vehicles, setVehicles, handleRefresh, loading, stations} = useOutletContext()
   const { isFormVisible, toggleFormVisibility } = useBlur();

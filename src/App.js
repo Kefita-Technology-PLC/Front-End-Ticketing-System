@@ -22,7 +22,6 @@ import mainImage from "./assets/background-image.png";
 import ShowVehicle from "./vehicles-subcomponents/ShowVehicle";
 import AddVehicle from "./vehicles-subcomponents/AddVehicle";
 import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicle";
-import {  useBlur } from "./contexts/BlurContext";
 import { apiEndpoint, headers } from "./data/AuthenticationData";
 import PageNotFound from "./pages/PageNotFound";
 import {PrimeReactProvider} from 'primereact/api'
@@ -35,6 +34,7 @@ import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
 import ShowAssociations from "./association-components/ShowAssociations";
 import AddAssociation from "./association-components/AddAssociation";
+import UpdateOrDelete from "./association-components/UpdateOrDelete";
 
 
 
@@ -125,7 +125,7 @@ function App() {
                 <Route path="Association" element={<Association />}>
                   <Route index  element={<ShowAssociations />}/>
                   <Route path="add" element={<AddAssociation/>} />
-                  
+                  <Route path="change" element={<UpdateOrDelete/>} />
                 </Route>
 
                 <Route path="Destination" element={<Destination />} />

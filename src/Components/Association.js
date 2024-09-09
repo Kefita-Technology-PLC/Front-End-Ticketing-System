@@ -45,7 +45,7 @@ export const Association = () => {
           firstButton={'Add'}
           seccondButton={'Delete or update'}
         />
-        
+
       </div>
 
       <Outlet 
