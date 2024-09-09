@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown } from 'primereact/dropdown'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom/dist'
+import LanguageSelector from '../Components/shared/LanguageSelector'
 
 function TopHeaders({topTitle, navLinks, navigation, mainUrl, firstButton, seccondButton}) {
   const {pathname} = useLocation()
@@ -14,6 +15,7 @@ function TopHeaders({topTitle, navLinks, navigation, mainUrl, firstButton, secco
     <div className='mb-3'>
       <div className='flex justify-between items-center p-2'>
         <h1 className='px-4 text-[23px] font-semibold'>{topTitle}</h1>
+        <LanguageSelector />
         <div className='flex gap-x-2'>
           
           {

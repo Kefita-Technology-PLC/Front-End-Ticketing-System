@@ -23,7 +23,9 @@ export default function Dashboard() {
         const generalReportData = await axios.get(`${apiEndpoint}/v1/general-report`, {headers})
         const userData = await axios.get(`${apiEndpoint}/user`, {headers})
         setGeneralReport(generalReportData.data.data)
+
         setCountTypes(generalReportData.data.data.carTypesCount)
+        // console.log(generalReportData.data.data)
         setUser(userData.data)
         console.log(generalReport)
       }catch(err){
@@ -34,17 +36,9 @@ export default function Dashboard() {
     }
   )
 
-  
   useEffect( ()=>{
     fetchData()
   },[])
-
-  const languages = [
-    {code: 'en', name: "English", id:1},
-    {code: "amh", name: "Amharic", id:2},
-    {code: "oro", name: "Oromifa", id:3},
-  ]
-
 
   return (
     <section className="mx-auto p-4">
@@ -62,11 +56,9 @@ export default function Dashboard() {
             loading ?
             (
               <p>Loading..</p>
-            
             ) :
             (
             <div className="grid md:grid-cols-3 p-2 gap-y-2 gap-x-2 grid-cols-1 sm:grid-cols-2">
-
                 <ComPie 
                   title={'Total Registered Vehicles'}
                   description={'Total registered cars by their type'}

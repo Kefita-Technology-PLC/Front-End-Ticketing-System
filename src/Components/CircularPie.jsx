@@ -1,6 +1,4 @@
 "use client"
-
-import { TrendingUp } from "lucide-react"
 import {
   Label,
   PolarGrid,
@@ -17,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card'
-import { ChartConfig, ChartContainer } from "./ui/chart"
+import { ChartContainer } from "./ui/chart"
 
 export const description = "A radial chart with a custom shape"
 

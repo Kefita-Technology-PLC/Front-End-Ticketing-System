@@ -37,6 +37,7 @@ export const Association = () => {
   return (
     <div className="p-2 pt-6 md:pt-2 ">
       <div className="relative">
+
         <TopHeaders
           topTitle={'Associations'}
           navigation={associationNavigation}
@@ -44,6 +45,7 @@ export const Association = () => {
           firstButton={'Add'}
           seccondButton={'Delete or update'}
         />
+        
       </div>
 
       <Outlet 

@@ -13,7 +13,8 @@ function LanguageSelector() {
 
   console.log(isEthiopianOrGregorian)
   return (
-    <select className="h-5 " name="" id="" onChange={(e) => {
+    
+    <select className="p-2 rounded-lg outline-1 outline-black" name="" id="" onChange={(e) => {
       changeLanguage(e.target.value)
       console.log(e.target.value)
 
@@ -26,9 +27,9 @@ function LanguageSelector() {
       }
       
     }}>
-      <option value="en">English</option>
-      <option value="amh">Amharic</option>
-      <option value="oro">Oromifa</option>
+      <option value="en"><span>🌐</span> <span>English</span></option>
+      <option value="amh"><span>🌐</span> <span>አማርኛ</span> </option>
+      <option value="oro"><span>🌐</span> <span>Oromifa</span></option>
     </select>
   )
 }
