@@ -3,6 +3,10 @@ import { useOutletContext } from 'react-router-dom'
 import { InputText } from 'primereact/inputtext'
 import { InputMask } from "primereact/inputmask"
 import { useEthiopianGregorian } from '../contexts/LanguageContext'
+import { Button } from "../Components/ui/Button"
+import { Input } from "../Components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "../Components/ui/popover"
+import { CalendarIcon } from 'lucide-react'
 
 function AddAssociation() {
   const {stations} = useOutletContext()
@@ -36,6 +40,7 @@ function AddAssociation() {
   return (
     <form onSubmit={handleSubmit} className='p-5 bg-white outline-1 outline-gray-900 rounded-xl max-w-[500px] mx-auto'>
       {/* <h2>Add Associations</h2> */}
+
       <div className='flex flex-col gap-y-6'>
         <div className="flex flex-column gap-2">
               <label htmlFor="association_name">Association Name</label>
@@ -61,19 +66,14 @@ function AddAssociation() {
               ):(
                 <div className='flex flex-col gap-2'>
                   <label htmlFor="establishment_date">Establishment Date</label>
-                  <input type="date" />
+                  <input type="date" name='establishment_data' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
                   <small>
                     Pick a date
                   </small>
+                  {/* <SimpleDatePicker /> */}
                 </div>
               )
             }
-            
-
-
-
-
-
       </div>
 
     </form>
@@ -81,3 +81,38 @@ function AddAssociation() {
 }
 
 export default AddAssociation
+
+function SimpleDatePicker() {
+  const [date, setDate] = useState('')
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value)
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Select date'
+    const [year, month, day] = dateString.split('-')
+    return `${month}/${day}/${year}`
+  }
+
+  return (
+    <div className="w-full max-w-sm">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="w-full justify-start text-left font-normal">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {formatDate(date)}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Input
+            type="date"
+            value={date}
+            onChange={handleDateChange}
+            className="border-none focus:ring-0"
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}

@@ -5,8 +5,10 @@ import FormInputSelect from '../inputs/FormInputSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useOutletContext } from 'react-router-dom';
 import ClipLoader from "react-spinners/ClipLoader";
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 
-function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels, errors}) {
+function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels, errors, refValue}) {
 
   let [color] = useState("#ffffff")
   const { isFormVisible } = useBlur();
@@ -19,6 +21,7 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
     margin: "0 auto",
     borderColor: "red",
   };
+  // const toast = useRef(null)
 
 
   return (
@@ -175,14 +178,16 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
           </div>
 
           <div className="p-3 pl-8">
-            <button
+            <Toast ref={refValue} />
+            <Button
               type="submit"
               form='edit-form'
+              severity='success'
               onClick={handleSubmit}
               className="btn text-white bg-blue-500 text-[15px] btn-primary mr-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-xs"
             >
               Update Vehicle
-            </button>
+            </Button>
           </div>
         </form>}
     </div>

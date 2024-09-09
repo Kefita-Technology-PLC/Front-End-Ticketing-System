@@ -3,20 +3,19 @@ import { useBlur } from '../../contexts/BlurContext';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import DeleteFrom from '../../vehicles-subcomponents/DeleteFrom';
 import Skeleton from 'react-loading-skeleton';
 import { headers, apiEndpoint } from "../../data/AuthenticationData";
 import { levels, codes } from '../../data/VehicleData';
+import { Toast } from 'primereact/toast';
 
 function Search({ vehiclesData }) {
   const {vehicles, setVehicles, handleRefresh, loading, stations} = useOutletContext()
   const { isFormVisible, toggleFormVisibility } = useBlur();
-
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [searchInput, setSearchInput] = useState('');
- 
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({})
   const [selectedStation, setSelectedStation] = useState('');
@@ -26,6 +25,8 @@ function Search({ vehiclesData }) {
     // State for editing vehicle
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false)
+  const toast = useRef(null)
+
   const [formData, setFormData] = useState({
     id: null,
     station_name: '',
@@ -64,7 +65,7 @@ function Search({ vehiclesData }) {
   // Handle form submission for editing
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
-
+    toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000})
 
     try{
       const token = localStorage.getItem('token');
@@ -263,6 +264,7 @@ function Search({ vehiclesData }) {
           codes={codes}
           levels={levels}
           cancelEdit={cancelEdit}
+          refValue = {toast}
           />
         )}
         {isDeleting && (
