@@ -73,7 +73,6 @@ function Search({ vehiclesData }) {
       const headers = { Authorization: `Bearer ${token}` };
   
       const response = await axios.patch(`${apiEndpoint}/v1/vehicles/${formData.id}`, formData, { headers },)
-
     
       setVehicles((prevVehicles) =>
         prevVehicles.map((vehicle) =>
@@ -136,7 +135,6 @@ function Search({ vehiclesData }) {
       axios
         .get(`${apiEndpoint}/v1/vehicles/${editVehicleId || deleteVehicleId}`, { headers })
         .then((response) => {
-          
           setFormData({
             id: response.data.data.id,
             station_name: response.data.data.station ? response.data.data.station.name : '',

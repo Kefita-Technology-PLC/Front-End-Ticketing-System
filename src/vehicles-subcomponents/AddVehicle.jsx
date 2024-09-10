@@ -27,7 +27,7 @@ function AddVehicle() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => {
-      // Check if value is an object and handle accordingly
+      // Check if value is an object and handle accordinglya
       if (typeof value === 'object' && value !== null) {
         // Handle specific fields separately
         switch (name) {

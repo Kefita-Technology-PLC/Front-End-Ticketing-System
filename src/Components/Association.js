@@ -4,8 +4,12 @@ import { Outlet } from "react-router-dom";
 import axios from "axios";
 import TopHeaders from "../headers/TopHeaders";
 import { associationNavigation } from "../data/AssociationData";
+import { useEthiopianGregorian } from "../contexts/LanguageContext";
 
 export const Association = () => {
+
+  const {isEthiopianOrGregorian} = useEthiopianGregorian()
+
   const [associations, setAssociations] = useState([])
   const [errors, setErrors] = useState([])
   const [loading, setLoading] = useState(false)
@@ -28,7 +32,7 @@ export const Association = () => {
 
   useEffect(()=>{
     fetchData()
-  }, [refreshFlag])
+  }, [refreshFlag,isEthiopianOrGregorian])
 
   const handleRefresh = () =>{
     setRefreshFlag((prev) => !prev)
@@ -53,6 +57,7 @@ export const Association = () => {
           associations,
           handleRefresh,
           loading,
+          setAssociations
         }}
       >
       </Outlet>

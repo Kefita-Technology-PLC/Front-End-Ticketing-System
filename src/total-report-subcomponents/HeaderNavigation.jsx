@@ -1,5 +1,5 @@
 
-import { faEdit, faFileExcel, faFileExport, faFileText, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {  faFileExport, faFileText,  } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom/dist'

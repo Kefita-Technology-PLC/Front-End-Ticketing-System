@@ -1,7 +1,6 @@
 
 import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'primereact/dropdown'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom/dist'
 import LanguageSelector from '../Components/shared/LanguageSelector'

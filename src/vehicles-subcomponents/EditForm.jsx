@@ -49,7 +49,7 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
             <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
               <FormInputSelect
                 name="station_name"
-                value={formData.station_name}
+                value={formData.station_name}a
                 handle={handleChange}
                 error={errors.station_name}
                 optionValue={stations}
