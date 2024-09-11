@@ -44,37 +44,36 @@ function AddAssociation() {
 
       <div className='flex flex-col gap-y-6'>
         <div className="flex flex-column gap-2">
-              <label htmlFor="association_name">Association Name</label>
-              <InputText id="association_name" name='name' value={formData.name} onChange={handleChange} className=' text-xs ' />
+            <label htmlFor="association_name">Association Name</label>
+            <InputText id="association_name" name='name' value={formData.name} onChange={handleChange} className=' text-xs ' />
 
-              <small id="username-help">
-                  Enter the association name.
-              </small>
-  
+            <small id="username-help">
+                Enter the association name.
+            </small>
         </div>
 
-            {
-              isEthiopianOrGregorian ? (
-                <div className="flex flex-column gap-2">
-                  <label htmlFor="establishment_date">Establishment Date</label>
-                  <InputMask id="establishment_date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className=' text-xs ' mask='99/99/9999' />
-    
-                  <small id="username-help">
-                      Enter the establishment Date.
-                  </small>
-    
+          {
+            isEthiopianOrGregorian ? (
+              <div className="flex flex-column gap-2">
+                <label htmlFor="establishment_date">Establishment Date</label>
+                <InputMask id="establishment_date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className=' text-xs ' mask='99/99/9999' />
+  
+                <small id="username-help">
+                    Enter the establishment Date.
+                </small>
+  
+            </div>
+            ):(
+              <div className='flex flex-col gap-2'>
+                <label htmlFor="establishment_date">Establishment Date</label>
+                <input type="date" name='establishment_data' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
+                <small>
+                  Pick a date
+                </small>
+                {/* <SimpleDatePicker /> */}
               </div>
-              ):(
-                <div className='flex flex-col gap-2'>
-                  <label htmlFor="establishment_date">Establishment Date</label>
-                  <input type="date" name='establishment_data' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
-                  <small>
-                    Pick a date
-                  </small>
-                  {/* <SimpleDatePicker /> */}
-                </div>
-              )
-            }
+            )
+          }
       </div>
 
     </form>

@@ -10,25 +10,37 @@ import  ClipLoader  from 'react-spinners/ClipLoader'
 import { apiEndpoint, headers } from '../data/AuthenticationData'
 import { Button } from '../Components/ui/Button'
 import { Toast } from 'primereact/toast'
+import { InputText } from 'primereact/inputtext'
+import { InputMask } from 'primereact/inputmask'
+import FormButton from '../Components/shared/FormButton'
+import ErrorMessage from '@/Components/shared/ErrorMessage'
+
 
 function UpdateOrDelete() {
   const {associations, setAssociations, loading,handleRefresh} = useOutletContext()
   const {isEthiopianOrGregorian} = useEthiopianGregorian()
 
   const [error, setError] = useState(null)
-  const [erros, setErrors] = useState({})
+  const [errors, setErrors] = useState({})
   const {isFormVisible, toggleFormVisibility} = useBlur()
   const [searchInput, setSearchInput] = useState('')
   const [filteredAssociations, setFilterdAssociations] = useState([])
   const [editAssociationId, setEditAssociationId] = useState(null)
   const [deleteAssociationId, setDeleteAssociationId] = useState(null)
 
-  const [formData, setFromData] = useState({
+
+
+  const [formData, setFormData] = useState({
     id: null,
     name: '',
     establishment_date: '',
     amharic: isEthiopianOrGregorian
   })
+
+    // Handle form input changes
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
 
   // State for editing vehicle
   const [ isEditing, setIsEditing] = useState(false)
@@ -55,7 +67,7 @@ function UpdateOrDelete() {
       axios
       .get(`${apiEndpoint}/v1/vehicles/${editAssociationId || deleteAssociationId}`, {headers})
       .then((response)=>{
-        setFromData({
+        setFormData({
           id: response.data.data.id,
           name: response.data.data.name,
           establishment_date: response.data.data.establishment_date
@@ -102,11 +114,18 @@ function UpdateOrDelete() {
 
       setEditAssociationId(null)
       setIsEditing(false)
-      setFromData({})
+      setFormData({})
       toggleFormVisibility()
       handleRefresh()
     }catch(err){
-
+          // Check if the error response is a validation error
+      if (error.response && error.response.status === 422) {
+        // Set the validation errors in the state
+        setErrors(error.response.data.errors || {});
+      } else {
+        // Set a generic error message if the error is not a validation error
+        setError('Failed to update vehicle.');
+      }
     }
   }
 
@@ -138,6 +157,7 @@ function UpdateOrDelete() {
               <th className='px-4 py-2 text-left'>Establishment Date </th>
               <th className='px-4 py-2 text-left'>Edited</th>
               <th className='px-4 py-2 text-left'>Registerd At</th>
+              <th className='px-4 py-2 text-left'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -161,7 +181,7 @@ function UpdateOrDelete() {
                   return(
                   <tr key={association.id} className='bg-white border-b'>
                     <td className='px-4 py-2'>{index + 1}</td>
-
+                    <td className='px-4 py-2'>{association.name}</td>
                     <td className='px-4 py-2'>{ association.stations ?
                     association.stations.map((station) =>
                      (<span>{station.name}</span>)) : 'No Stations'
@@ -204,7 +224,9 @@ function UpdateOrDelete() {
         <EditAssociation
           handleX={handleX}
           handleSubmit={handleSubmit}
-          
+          formData={formData}
+          errors={errors}
+          handleChange={handleChange}
       />
       }
 
@@ -214,19 +236,14 @@ function UpdateOrDelete() {
 
 export default UpdateOrDelete
 
-function EditAssociation({handleX, handleSubmit}){
+function EditAssociation({handleX, handleSubmit, formData, errors, handleChange}){
 
   let [color] = useState("#ffffff")
   const {isEthiopianOrGregorian} = useEthiopianGregorian()
   const {isFormVisible} = useBlur()
   const {loading} = useOutletContext()
   const formRef = useRef(null)
-  const [formData, setFormData] = useState({
-    id: null,
-    name: '',
-    establishment_date: '',
-    amharic: isEthiopianOrGregorian
-  })
+
   const override = {
     display: "block",
     margin: "0 auto",
@@ -256,28 +273,55 @@ function EditAssociation({handleX, handleSubmit}){
           </div>
           <div className="flex m-7 justify-around gap-7">
 
-            <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
+            {/* <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
+            
 
-
-            </div>
+            </div> */}
 
             <div className="flex flex-col gap-2 w-full">
-  
+              <div className="flex flex-column gap-2">
+                  <label htmlFor="association_name">Association Name</label>
+                  <InputText id="association_name" name='name' value={formData.name} onChange={handleChange} className=' text-xs ' />
 
+                  <small id="username-help">
+                      Enter the association name.
+                  </small>
+              </div>
+              <ErrorMessage error={errors.name} />
+
+              {
+                isEthiopianOrGregorian ? (
+                  <div className="flex flex-column gap-2">
+                    <label htmlFor="establishment_date">Establishment Date</label>
+                    <InputMask id="establishment_date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className=' text-xs ' mask='99/99/9999' />
+      
+                    <small id="username-help">
+                        Enter the establishment Date.
+                    </small>
+                </div>
+                ):(
+                  <div className='flex flex-col gap-2'>
+                    <label htmlFor="establishment_date">Establishment Date</label>
+                    <input type="date" name='establishment_data' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
+                    <small>
+                      Pick a date
+                    </small>
+                    {/* <SimpleDatePicker /> */}
+                  </div>
+                )
+              }
+              <ErrorMessage 
+                error={errors.establishment_date}
+              />
             </div>
           </div>
 
           <div className="p-3 pl-8">
             {/* <Toast ref={refValue} /> */}
-            <Button
-              type="submit"
-              form='edit-form'
-              severity='success'
-              onClick={handleSubmit}
-              className="btn text-white bg-blue-500 text-[15px] btn-primary mr-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-xs"
-            >
-              Update Vehicle
-            </Button>
+            <FormButton
+              text={'Update Vehicle'}
+              handleSubmit={handleSubmit}
+            />
           </div>
         </form>}
     </div>
