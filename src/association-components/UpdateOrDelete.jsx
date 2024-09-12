@@ -277,7 +277,6 @@ function EditAssociation({handleX, handleSubmit, formData, errors, handleChange}
             
 
             </div> */}
-
             <div className="flex flex-col gap-2 w-full">
               <div className="flex flex-column gap-2">
                   <label htmlFor="association_name">Association Name</label>
