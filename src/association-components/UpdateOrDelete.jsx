@@ -3,13 +3,13 @@ import { useEthiopianGregorian } from '../contexts/LanguageContext'
 import { faCheck, faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useOutletContext } from 'react-router-dom'
 import { apiEndpoint } from '../data/AuthenticationData'
 import EditAssociation from './EditAssociation'
-import { Delete } from 'lucide-react'
 import DeleteAssociation from './DeleteAssociation'
+import ErrorMessage from '../Components/shared/ErrorMessage'
 
 
 function UpdateOrDelete() {
@@ -128,18 +128,17 @@ function UpdateOrDelete() {
       setFormData({})
       toggleFormVisibility()
       handleRefresh()
-    }catch(err){
+    }catch(error){
           // Check if the error response is a validation error
       if (error.response && error.response.status === 422) {
         // Set the validation errors in the state
         setErrors(error.response.data.errors || {});
-        console.log(errors)
+        // console.log(errors)
       } else {
         // Set a generic error message if the error is not a validation error
         setError('Failed to update vehicle.');
 
       }
-      console.log('asata chgir')
     }
   }
 
@@ -161,7 +160,7 @@ function UpdateOrDelete() {
           </form>
         </div>
 
-        {error && <p style={{ color: 'red' }}>{error}</p> }
+        {error && <ErrorMessage error={error} /> }
         <table className='w-full border-collapse'>
           <thead className='bg-gray-200'>
             <tr className='uppercase font-semibold'>
@@ -249,6 +248,7 @@ function UpdateOrDelete() {
             formData={formData}
             errors={errors}
             handleChange={handleChange}
+          
           />
         }{
           isDeleting &&

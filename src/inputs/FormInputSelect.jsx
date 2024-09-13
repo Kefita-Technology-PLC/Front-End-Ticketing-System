@@ -1,4 +1,5 @@
 import React from 'react'
+import ErrorMessage from '../Components/shared/ErrorMessage'
 function FormInputSelect({
   name, 
   value, 
@@ -32,7 +33,7 @@ function FormInputSelect({
 
       </select>
       { error && (
-        <p className="mt-1 text-sm text-red-500 dark:text-red-400">{error[0]}</p>
+         <ErrorMessage error={error[0]} />
       )}
     </div>
   )

@@ -1,8 +1,11 @@
 import axios from 'axios'
 import React from 'react'
 import { apiEndpoint } from '../../data/AuthenticationData'
+import { useBlur } from '../../contexts/BlurContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faX } from '@fortawesome/free-solid-svg-icons'
 
-function DeleteCard({handleX, formData, changeFlag, requestField, children}) {
+function DeleteCard({handleX, formData, changeFlag, requestField, children, feildName}) {
   const {isFormVisible, toggleFormVisibility} = useBlur()
 
   const handleSubmit = (event) =>{
@@ -26,11 +29,11 @@ function DeleteCard({handleX, formData, changeFlag, requestField, children}) {
   return (
     <form className={`p-10 rounded-md fixed top-[50px] shadow-lg bg-white z-[100] left-1/2 transform -translate-x-1/2 blur-0 ${isFormVisible? '': 'hidden '}`} onSubmit={handleSubmit}>
       <div className='flex justify-between items-center gap-x-[150px] '>
-        <h2 className='text-xl font-semibold'>Delete Association</h2>
+        <h2 className='text-xl font-semibold'>Delete {feildName}</h2>
         <span onClick={handleX}><FontAwesomeIcon icon={faX} className=' hover:cursor-pointer' /></span>
       </div>
 
-      <p className='text-xs text-red-500 py-3'>Are you sure you want to delete this association from the system?</p>
+      <p className='text-xs text-red-500 py-3'>Are you sure you want to delete this {feildName} from the system?</p>
 
       <div className='border-1'>
         {
