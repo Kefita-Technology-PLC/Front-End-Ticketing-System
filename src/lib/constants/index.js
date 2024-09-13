@@ -32,10 +32,11 @@ export const DASHBOARD_SIDEBAR_LINKS = [
   },
   {
     key: "Destination",
-    label: "Destination",
-    path: "/Destination",
+    label: "Deployment Lines",
+    path: "/deployment-lines",
     icon: <HiOutlineLocationMarker />,
   },
+
   {
     key: "Tarif",
     label: "Tarif",

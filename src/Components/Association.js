@@ -9,7 +9,6 @@ import { useEthiopianGregorian } from "../contexts/LanguageContext";
 export const Association = () => {
 
   const {isEthiopianOrGregorian} = useEthiopianGregorian()
-
   const [associations, setAssociations] = useState([])
   const [errors, setErrors] = useState([])
   const [loading, setLoading] = useState(false)

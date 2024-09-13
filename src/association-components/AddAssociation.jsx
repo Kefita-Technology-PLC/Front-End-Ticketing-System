@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { Navigate, useOutletContext } from 'react-router-dom'
 import { InputText } from 'primereact/inputtext'
 import { InputMask } from "primereact/inputmask"
 import { useEthiopianGregorian } from '../contexts/LanguageContext'
@@ -7,12 +7,15 @@ import { Button } from "../Components/ui/Button"
 import { Input } from "../Components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "../Components/ui/popover"
 import { CalendarIcon } from 'lucide-react'
+import axios from 'axios'
+import { apiEndpoint, headers } from '../data/AuthenticationData'
 // import { CalenderIcon } from 'lucide-react'
 
 function AddAssociation() {
 
-  const {stations} = useOutletContext()
+  const {handleRefresh} = useOutletContext()
   const [errors, setErrors] = useState({})
+  const [showSuccess, setShowSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const {isEthiopianOrGregorian} = useEthiopianGregorian()
 
@@ -22,8 +25,25 @@ function AddAssociation() {
     amharic: isEthiopianOrGregorian || false,
   })
 
-  const handleSubmit = () =>{
-    
+  const handleSubmit = async(e) =>{
+    e.preventDefault()
+    setErrors({})
+    try {
+      await axios.post(`${apiEndpoint}/v1/associations`, formData, {headers})
+      setLoading(false)
+      setShowSuccess(true)
+
+      setTimeout(()=>{
+        setShowSuccess(false)
+      }, 3000)
+      handleRefresh()
+      Navigate('/Association')
+    } catch (error) {
+      setLoading(false)
+      if (error.response && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+      }  
+    }
   }
 
   const handleChange = (e) => {

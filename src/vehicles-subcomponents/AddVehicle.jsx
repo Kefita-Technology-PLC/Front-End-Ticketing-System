@@ -80,7 +80,7 @@ function AddVehicle() {
         setShowSuccess(false); // Hide success message after 3 seconds
       }, 3000);
       handleRefresh()
-        navigate('/Vehicle'); // Redirect to 
+      navigate('/Vehicle'); // Redirect to 
   
     } catch (error) {
       setLoading(false); // Set loading to false

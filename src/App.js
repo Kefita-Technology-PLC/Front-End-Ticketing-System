@@ -10,7 +10,7 @@ import { Layout } from "./Components/shared/Layout";
 import Dashboard from "./Components/Dashboard";
 import Vehicle from "./Components/Vehicle";
 import { Association } from "./Components/Association";
-import { Destination } from "./Components/Destination";
+import DeploymentLine from "./Components/DeploymentLine";
 import Tariff from "./Components/Tarif";
 import { Employee } from "./Components/Employee";
 import { Eadd } from "./Components/Eadd";
@@ -25,16 +25,17 @@ import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicl
 import { apiEndpoint, headers } from "./data/AuthenticationData";
 import PageNotFound from "./pages/PageNotFound";
 import {PrimeReactProvider} from 'primereact/api'
-// import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "primereact/resources/primereact.min.css"
 import "primeicons/primeicons.css"
 import "primeflex/primeflex.css"
-// import 'primereact/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
 import ShowAssociations from "./association-components/ShowAssociations";
 import AddAssociation from "./association-components/AddAssociation";
 import UpdateOrDelete from "./association-components/UpdateOrDelete";
+import ShowDeploymentLine from "./delployment-line-components/ShowDeploymentLine";
+import AddDeploymentLine from "./delployment-line-components/AddDeploymentLine";
+import UpdateOrDeleteDL from "./delployment-line-components/UpdateOrDeleteDL";
 
 
 
@@ -116,9 +117,9 @@ function App() {
                 <Route index element={<Dashboard />} />
 
                 <Route path="/Vehicle" element={<Vehicle/>}>
-                    <Route index element={<ShowVehicle />}/>
-                    <Route path='add' element={<AddVehicle/>} />
-                    <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
+                  <Route index element={<ShowVehicle />}/>
+                  <Route path='add' element={<AddVehicle/>} />
+                  <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
                 </Route>
 
 
@@ -128,7 +129,11 @@ function App() {
                   <Route path="change" element={<UpdateOrDelete/>} />
                 </Route>
 
-                <Route path="Destination" element={<Destination />} />
+                <Route path="deployment-lines" element={<DeploymentLine />} >
+                  <Route index  element={<ShowDeploymentLine/>} />
+                  <Route path="add" element={<AddDeploymentLine/>} />
+                  <Route path="change" element={<UpdateOrDeleteDL/>} />
+                </Route>
 
                 <Route
                   path="Tarif"
