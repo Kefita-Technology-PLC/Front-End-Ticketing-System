@@ -15,7 +15,7 @@ export default function DropDown({data, headerTitles}) {
       name: association.name,
       stations: association.stations.map(station => station.name).join(', '),
       establishmentDate:new Date(association.establishment_date).toLocaleDateString(),
-      edited: association.created_at === association.updated_at ? 'No' : <><FontAwesomeIcon icon={faCheck} /> {new Date(association.updated_at.toLocaleDateString())}</> ,
+      edited: association.created_at === association.updated_at ? 'No' : <><FontAwesomeIcon icon={faCheck} /> {new Date(association.updated_at).toLocaleDateString()}</> ,
       createdAt : new  Date(association.created_at).toLocaleDateString()
     }))
 
