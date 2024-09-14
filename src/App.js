@@ -8,9 +8,6 @@ import ForgotPassword from "./auth/components/ForgetPassword";
 import ResetPassword from "./auth/ResetPassword";
 import { Layout } from "./Components/shared/Layout";
 import Dashboard from "./Components/Dashboard";
-import Vehicle from "./Components/Vehicle";
-import { Association } from "./Components/Association";
-import DeploymentLine from "./Components/DeploymentLine";
 import Tariff from "./Components/Tarif";
 import { Employee } from "./Components/Employee";
 import { Eadd } from "./Components/Eadd";
@@ -19,9 +16,7 @@ import { TarifAdd } from "./Components/TarifAdd";
 import { Tarifupdate } from "./Components/Tarifupdate";
 import { Eupdate } from "./Components/Eupdate";
 import mainImage from "./assets/background-image.png";
-import ShowVehicle from "./vehicles-subcomponents/ShowVehicle";
-import AddVehicle from "./vehicles-subcomponents/AddVehicle";
-import DeleteOrUpdateVehicle from "./vehicles-subcomponents/DeleteOrUpdateVehicle";
+import {AddVehicle, ShowVehicle, DeleteOrUpdateVehicle, Vehicle} from"./imports/vehicleImport"
 import { apiEndpoint, headers } from "./data/AuthenticationData";
 import PageNotFound from "./pages/PageNotFound";
 import {PrimeReactProvider} from 'primereact/api'
@@ -30,17 +25,9 @@ import "primeicons/primeicons.css"
 import "primeflex/primeflex.css"
 import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
-import ShowAssociations from "./association-components/ShowAssociations";
-import AddAssociation from "./association-components/AddAssociation";
-import UpdateOrDelete from "./association-components/UpdateOrDelete";
-import ShowDeploymentLine from "./delployment-line-components/ShowDeploymentLine";
-import AddDeploymentLine from "./delployment-line-components/AddDeploymentLine";
-import UpdateOrDeleteDL from "./delployment-line-components/UpdateOrDeleteDL";
+import { ShowDeploymentLine, AddDeploymentLine, UpdateOrDeleteDL, DeploymentLine } from "./imports/deploymentImport";
+import { ShowAssociations, AddAssociation, UpdateOrDelete, Association } from "./imports/associationImport";
 
-
-
-
-// import { BlurProvider, useBlur } from "./contexts/BlurContext";
 
 function App() {
 

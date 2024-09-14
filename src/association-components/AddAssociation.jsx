@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate, useOutletContext } from 'react-router-dom'
+import {  useNavigate, useOutletContext } from 'react-router-dom'
 import { InputText } from 'primereact/inputtext'
 import { InputMask } from "primereact/inputmask"
 import { useEthiopianGregorian } from '../contexts/LanguageContext'
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../Components/ui/popove
 import { CalendarIcon } from 'lucide-react'
 import axios from 'axios'
 import { apiEndpoint, headers } from '../data/AuthenticationData'
+import ErrorMessage from '../Components/shared/ErrorMessage'
 // import { CalenderIcon } from 'lucide-react'
 
 function AddAssociation() {
@@ -25,9 +26,13 @@ function AddAssociation() {
     amharic: isEthiopianOrGregorian || false,
   })
 
+  const navigate = useNavigate()
+
   const handleSubmit = async(e) =>{
     e.preventDefault()
     setErrors({})
+    setLoading(true)
+
     try {
       await axios.post(`${apiEndpoint}/v1/associations`, formData, {headers})
       setLoading(false)
@@ -37,7 +42,7 @@ function AddAssociation() {
         setShowSuccess(false)
       }, 3000)
       handleRefresh()
-      Navigate('/Association')
+      navigate('/Association')
     } catch (error) {
       setLoading(false)
       if (error.response && error.response.data.errors) {
@@ -47,6 +52,7 @@ function AddAssociation() {
   }
 
   const handleChange = (e) => {
+  
     setFormData((prevData) => {
       const {name, value} = e.target
       return {
@@ -54,6 +60,7 @@ function AddAssociation() {
         [name] : value
       }
     });
+    console.log(formData)
   }
 
   // console.log(formData)
@@ -70,6 +77,9 @@ function AddAssociation() {
             <small id="username-help">
                 Enter the association name.
             </small>
+            <ErrorMessage 
+              error={errors.origin}
+            />
         </div>
 
           {
@@ -81,19 +91,30 @@ function AddAssociation() {
                 <small id="username-help">
                     Enter the establishment Date.
                 </small>
-  
+              <ErrorMessage error={errors.establishment_date} />
             </div>
             ):(
               <div className='flex flex-col gap-2'>
                 <label htmlFor="establishment_date">Establishment Date</label>
-                <input type="date" name='establishment_data' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
+                <input type="date" name='establishment_date' value={formData.establishment_date} onChange={handleChange} className='p-2 outline outline-1 rounded-sm outline-gray-700' />
                 <small>
                   Pick a date
                 </small>
                 {/* <SimpleDatePicker /> */}
+                <ErrorMessage error={errors.establishment_date} />
               </div>
             )
           }
+      </div>
+
+      <div className="p-3 pl-8">
+        <button
+          type="submit"
+          className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? 'Adding...' : 'Add Association'}
+        </button>
       </div>
 
     </form>

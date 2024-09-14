@@ -3,7 +3,8 @@ import { useEthiopianGregorian } from '../contexts/LanguageContext'
 import { InputText } from 'primereact/inputtext'
 import axios from 'axios'
 import { apiEndpoint, headers } from '../data/AuthenticationData'
-import { Navigate, useOutletContext } from 'react-router-dom'
+import { Navigate, useNavigate, useOutletContext } from 'react-router-dom'
+import ErrorMessage from '../Components/shared/ErrorMessage'
 
 function AddDeploymentLine() {
 
@@ -16,6 +17,7 @@ function AddDeploymentLine() {
     origin: '',
     destination: '',
   })
+  const navigate = useNavigate()
 
 
   const handleChange = (e) =>{
@@ -29,7 +31,7 @@ function AddDeploymentLine() {
   }
 
   const handleSubmit = async(e)=>{
-    e.prevetDefault()
+    e.preventDefault()
     setErrors({})
 
     try{
@@ -42,7 +44,7 @@ function AddDeploymentLine() {
         setShowSuccess(false)
       }, 3000)
       handleRefresh()
-      Navigate('/Association')
+      navigate('/deployment-lines')
     }catch(error){
       setLoading(false)
       if (error.response && error.response.data.errors) {
@@ -57,21 +59,38 @@ function AddDeploymentLine() {
       <div className='flex flex-col gap-y-6'>
 
         <div className="flex flex-column gap-2">
-            <label htmlFor="association_name">Deployment Origin</label>
-            <InputText id="association_name" name='name' value={formData.origin} onChange={handleChange} className=' text-xs ' />
+            <label htmlFor="origin">Deployment Origin</label>
+            <InputText id="origin" name='origin' value={formData.origin} onChange={handleChange} className=' text-xs ' />
 
             <small id="username-help">
                 Enter the deployment origin name.
             </small>
+
+            <ErrorMessage 
+              error={errors.origin}
+            />
         </div>
 
-        <div>
-          <label htmlFor="association_name">Deployment Destination</label>
-          <InputText id="association_name" name='name' value={formData.destina} onChange={handleChange} className=' text-xs ' />
+        <div className="flex flex-column gap-2">
+          <label htmlFor="destination">Deployment Destination</label>
+          <InputText id="destination" name='destination' value={formData.destination} onChange={handleChange} className=' text-xs ' />
 
           <small id="username-help">
               Enter the deployment destination name.
           </small>
+          <ErrorMessage 
+            error={errors.destination}
+          />
+        </div>
+
+        <div className="p-3 pl-8">
+          <button
+            type="submit"
+            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? 'Adding...' : 'Add Deployment'}
+          </button>
         </div>
 
       </div>

@@ -71,8 +71,8 @@ function AddVehicle() {
     e.preventDefault();
     setErrors({});
     setLoading(true); // Set loading to true
+    
     try {
-  
       await axios.post(`${apiEndpoint}/v1/vehicles`, formData, { headers });
       setLoading(false); // Set loading to false
       setShowSuccess(true); // Show success message
