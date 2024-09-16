@@ -27,6 +27,7 @@ import 'primereact/resources/themes/tailwind-light/theme.css'
 import { TotalReport } from "./Components/TotalReport";
 import { ShowDeploymentLine, AddDeploymentLine, UpdateOrDeleteDL, DeploymentLine } from "./imports/deploymentImport";
 import { ShowAssociations, AddAssociation, UpdateOrDelete, Association } from "./imports/associationImport";
+import ItemList from "./vehicles-subcomponents/ItemList";
 
 
 function App() {
@@ -106,7 +107,10 @@ function App() {
                 <Route path="/Vehicle" element={<Vehicle/>}>
                   <Route index element={<ShowVehicle />}/>
                   <Route path='add' element={<AddVehicle/>} />
-                  <Route path="change" element={<DeleteOrUpdateVehicle vehicleData={vehicles} />}/>
+                  <Route path="change" element={
+                  // <DeleteOrUpdateVehicle vehicleData={vehicles} />
+                  <ItemList />
+                  }/>
                 </Route>
 
 

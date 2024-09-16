@@ -1,13 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import FormInputSelect from '../inputs/FormInputSelect';
 import { useOutletContext } from 'react-router-dom';
 import EditCard from '../Components/shared/EditCard';
 import ErrorMessage from '../Components/shared/ErrorMessage';
+import StationSearchSelect from './StationSearchSelect';
+import AssociationSearchSelect from './AssociationSearchSelect';
 
-function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels, errors, refValue}) {
+function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels, errors, setFormData}) {
 
-  const {loadingEdit, stations, associations, numPassengers, carTypes, deploymentLines } = useOutletContext()
+  const {numPassengers, carTypes} = useOutletContext()
+  const [selectedStation, setSelectedStation] = useState('')
+  const [selectedAssociation, setSelectedAssociation] = useState('')
+  const [selectedPlateNumber, setSelectedPlateNumber] = useState('')
+  const [selectedCode, setSelectedCode] = useState('')
+  const [selectedLevel, setSelectedLevel] = useState('')
+  const [selectedNumberOfPassengers, setSelectedNumberOfPassengers] = useState('')
+  const [selectedCarType, setSelectedCarType] = useState('')
+  const [selectedDeploymentLineId, setSelectedDeploymentLineId] = useState('')
 
+
+  useEffect(()=>{
+    setFormData({ 
+      ...formData, 
+      station_name: selectedStation,
+    });
+  },[selectedStation])
+
+  useEffect(()=>{
+    setFormData({ 
+      ...formData, 
+      association_name: selectedAssociation,
+    });
+  },[selectedAssociation])
+  
   return (
     <EditCard 
       handleSubmit={handleSubmit}
@@ -18,7 +43,7 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
       children={
         <div className="flex m-7 justify-around gap-7">
           <div className="flex flex-col gap-2 w-full border-r-[2px] pr-5">
-            <FormInputSelect
+            {/* <FormInputSelect
               name="station_name"
               value={formData.station_name}
               handle={handleChange}
@@ -27,9 +52,9 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
               label="Choose a Station"
               startValue="Select a station"
               isName={true}
-            />
+            /> */}
 
-            <FormInputSelect
+            {/* <FormInputSelect
               name="association_name"
               value={formData.association_name}
               handle={handleChange}
@@ -38,7 +63,20 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
               label="Association name"
               startValue="Select an association"
               isName={true}
+            /> */}
+            <StationSearchSelect 
+              onStationSelect={setSelectedStation}
+              value={formData}
+              handle={handleChange}
             />
+            <ErrorMessage error={errors.station_name} />
+
+            <AssociationSearchSelect 
+              setSelectedAssociation={setSelectedAssociation}
+              value={formData}
+              handle={handleChange}
+            />
+            <ErrorMessage error={errors.association_name} />
 
             <hr />
 
@@ -118,7 +156,8 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
               <ErrorMessage error={errors.car_type} />
             )}
 
-            <label htmlFor="deployment-line-select">Choose a deployment line:</label>
+
+            {/* <label htmlFor="deployment-line-select">Choose a deployment line:</label>
             <select
               id="deployment-line-select"
               value={formData.deployment_line_id}
@@ -136,7 +175,7 @@ function EditForm({handleSubmit, handleX, formData, handleChange, codes, levels,
             </select>
             {errors.deployment_line_id && (
               <ErrorMessage error={errors.deployment_line_id} />
-            )}
+            )} */}
           </div>
         </div>
       }
